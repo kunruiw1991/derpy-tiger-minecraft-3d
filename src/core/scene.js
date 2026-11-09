@@ -1,4 +1,4 @@
-// Three.js r170 scene, Playtime Co. Lavender-Berry & Candy-Pink Playcare Atrium lighting, and Gate F12 material hygiene.
+// Three.js r170 scene, Minecraft Overworld Azure Sky & Korean Minhwa Courtyard lighting, and Gate F12 material hygiene.
 import * as THREE from '../../vendor/three.module.min.js';
 
 export function createSceneContext(canvas) {
@@ -45,15 +45,15 @@ export function createSceneContext(canvas) {
   };
 
   const scene = new THREE.Scene();
-  // Vibrant Minecraft Sky-Blue & Honmoon Cyan-Gold Horizon
-  scene.background = new THREE.Color(0x5cc8ff);
-  scene.fog = new THREE.Fog(0x8ce0ff, 56, 108);
+  // Crisp Minecraft Overworld Azure Sky-Blue & Golden Minhwa Horizon
+  scene.background = new THREE.Color(0x68c2ff);
+  scene.fog = new THREE.Fog(0x8ce0ff, 58, 112);
 
-  const hemiLight = new THREE.HemisphereLight(0xfff9ec, 0x3b6ba5, 1.32);
+  const hemiLight = new THREE.HemisphereLight(0xfffdf2, 0x3b7a57, 1.35);
   hemiLight.position.set(0, 45, 0);
   scene.add(hemiLight);
 
-  const sunLight = new THREE.DirectionalLight(0xfff4d6, 1.36);
+  const sunLight = new THREE.DirectionalLight(0xfff6d6, 1.38);
   sunLight.position.set(22, 40, 20);
   sunLight.castShadow = true;
   sunLight.shadow.mapSize.set(512, 512);
@@ -66,7 +66,7 @@ export function createSceneContext(canvas) {
   sunLight.shadow.bias = -0.0008;
   scene.add(sunLight);
 
-  const fillLight = new THREE.DirectionalLight(0x74c0fc, 0.52);
+  const fillLight = new THREE.DirectionalLight(0x74c0fc, 0.54);
   fillLight.position.set(-20, 18, -18);
   scene.add(fillLight);
 

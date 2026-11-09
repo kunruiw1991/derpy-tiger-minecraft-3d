@@ -1,8 +1,8 @@
-// 3D Voxel Prank Gadgets, 3-Tier Playtime Prank Contraptions, Golden Prank Trophies,
-// Lily Lovebraids Gear (Golden Tea-Party Crown & Star Glasses, Rocket GrabPack Roller-Skates,
-// Royal Starlight Prank Cape), Bouncy Tea-Party Cushion Cloud & 2D 16x16 Pixel Icons for
-// Playtime Prank RPG 3D: Lily, Giblet & The Smiling Critters!
-// Inspired by GameToons' "CHAPTER 5: CIVIL WAR! (Poppy Playtime Animation)" (c4AAxXPD8w8).
+// 3D Voxel Minecraft & Korean Minhwa Weapons, 4-Stage Blue-and-White Porcelain Peony Flowerpots,
+// Golden Rescue Trophies, Derpy Tiger Gear (Sussie's Gat Hat Crown, Redstone Speed Boots,
+// Honmoon Starlight Cape), Minhwa Cloud Trampoline & 2D 16x16 Pixel Icons for
+// Derpy Tiger Minecraft Chapter 3D: Sussie, JJ, Mikey & The Underground Portal!
+// Inspired by EgruEB4oZ2E, WjAyI6kwylA & L0N4m23OSKM.
 // Zero CJK text, metalness <= 0.20 on all materials.
 
 import * as THREE from '../../vendor/three.module.min.js';
@@ -247,153 +247,111 @@ export function buildVoxelGroup(boxes, opts = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// 1. 5 Playtime Prank Gadgets (supporting all canonical + legacy weapon IDs)
-// Origin (0,0,0) sits cleanly in Lily Lovebraids' right hand grip; extends +Y
+// 1. 5 Derpy Tiger Minecraft & Korean Minhwa Weapons (supporting all canonical + legacy IDs)
+// Origin (0,0,0) sits cleanly in Derpy Tiger's right paw grip; extends +Y
 // ---------------------------------------------------------------------------
 
 function getWeaponBoxes(rawWeaponId) {
   const weaponId = resolveGadgetWeaponId(rawWeaponId);
   switch (weaponId) {
     case 'wooden_kentungan_bat':
-      // 1. wood_stick / wooden_kentungan_bat: Blue & Red GrabPack Hand Launcher
-      // (Yellow hazard handle + coiled wire + bright Blue & Red 5-fingered GrabPack hands)
+      // 1. Sussie's Gat Hat Boomerang (Black woven Joseon horsehair Gat hat with bamboo rim & cyan Honmoon bead string)
       return {
-        glowEmissive: 0x39d5ff,
+        glowEmissive: 0x3bc9db,
         glowIntensity: 0.30,
         boxes: [
-          // Yellow & black hazard launcher grip handle
-          { s: [0.14, 0.36, 0.14], p: [0, 0.04, 0], c: 0xffd43b, glow: true },
-          { s: [0.15, 0.06, 0.15], p: [0, -0.04, 0], c: 0x212529 },
-          { s: [0.15, 0.06, 0.15], p: [0, 0.10, 0], c: 0x212529 },
-          { s: [0.18, 0.10, 0.18], p: [0, -0.15, 0], c: 0x343a40 },
-          // Dual launcher collar & coiled black/cyan GrabPack cables
-          { s: [0.34, 0.10, 0.18], p: [0, 0.25, 0], c: 0x495057 },
-          { s: [0.08, 0.28, 0.08], p: [-0.10, 0.42, 0], c: 0x212529 },
-          { s: [0.08, 0.28, 0.08], p: [0.10, 0.42, 0], c: 0x212529 },
-          { s: [0.11, 0.05, 0.11], p: [-0.10, 0.38, 0], c: 0x39d5ff, glow: true },
-          { s: [0.11, 0.05, 0.11], p: [0.10, 0.46, 0], c: 0xff4d6d, glow: true },
-          // Left Bright Blue 5-Fingered GrabPack Hand (0x228be6)
-          { s: [0.22, 0.22, 0.09], p: [-0.13, 0.66, 0.02], r: [0, 0, 0.12], c: 0x228be6, glow: true },
-          { s: [0.05, 0.15, 0.07], p: [-0.24, 0.68, 0.02], r: [0, 0, 0.48], c: 0x339af0, glow: true },
-          { s: [0.04, 0.17, 0.06], p: [-0.20, 0.84, 0.02], r: [0, 0, 0.18], c: 0x339af0, glow: true },
-          { s: [0.04, 0.19, 0.06], p: [-0.15, 0.86, 0.02], r: [0, 0, 0.06], c: 0x339af0, glow: true },
-          { s: [0.04, 0.18, 0.06], p: [-0.10, 0.85, 0.02], r: [0, 0, -0.05], c: 0x339af0, glow: true },
-          { s: [0.04, 0.15, 0.06], p: [-0.05, 0.82, 0.02], r: [0, 0, -0.15], c: 0x339af0, glow: true },
-          // Right Bright Red 5-Fingered GrabPack Hand (0xe03131)
-          { s: [0.22, 0.22, 0.09], p: [0.13, 0.66, -0.02], r: [0, 0, -0.12], c: 0xe03131, glow: true },
-          { s: [0.05, 0.15, 0.07], p: [0.24, 0.68, -0.02], r: [0, 0, -0.48], c: 0xff595e, glow: true },
-          { s: [0.04, 0.17, 0.06], p: [0.20, 0.84, -0.02], r: [0, 0, -0.18], c: 0xff595e, glow: true },
-          { s: [0.04, 0.19, 0.06], p: [0.15, 0.86, -0.02], r: [0, 0, -0.06], c: 0xff595e, glow: true },
-          { s: [0.04, 0.18, 0.06], p: [0.10, 0.85, -0.02], r: [0, 0, 0.05], c: 0xff595e, glow: true },
-          { s: [0.04, 0.15, 0.06], p: [0.05, 0.82, -0.02], r: [0, 0, 0.15], c: 0xff595e, glow: true },
+          // Bamboo handle & cyan Honmoon bead cord
+          { s: [0.13, 0.42, 0.13], p: [0, 0.06, 0], c: 0xd4a359 },
+          { s: [0.17, 0.08, 0.17], p: [0, -0.14, 0], c: 0x3bc9db, glow: true },
+          { s: [0.15, 0.06, 0.15], p: [0, 0.24, 0], c: 0xffd43b, glow: true },
+          // Wide circular/octagonal black woven Gat brim + cylindrical crown at top
+          { s: [0.68, 0.07, 0.68], p: [0, 0.56, 0], c: 0x1e222d },
+          { s: [0.74, 0.05, 0.44], p: [0, 0.56, 0], c: 0x2b3040 },
+          { s: [0.44, 0.05, 0.74], p: [0, 0.56, 0], c: 0x2b3040 },
+          { s: [0.34, 0.28, 0.34], p: [0, 0.74, 0], c: 0x1e222d },
+          { s: [0.38, 0.07, 0.38], p: [0, 0.62, 0], c: 0xffd43b, glow: true },
+          { s: [0.22, 0.10, 0.22], p: [0, 0.90, 0], c: 0x3bc9db, glow: true },
         ],
       };
 
     case 'bronze_temple_gong':
-      // 2. stone_mallet / bronze_temple_gong: Lily's Stretchy Purple Braid Whip
-      // (Giant braided purple pigtail club tied with a golden star ribbon)
+      // 2. Rumi's Honmoon Light Blade (Glowing cyan & gold K-Pop Demon Hunters sword)
       return {
-        glowEmissive: 0xae3ec9,
-        glowIntensity: 0.34,
+        glowEmissive: 0x3bc9db,
+        glowIntensity: 0.36,
         boxes: [
-          // Lavender & gold ribbon handle
-          { s: [0.12, 0.38, 0.12], p: [0, 0.06, 0], c: 0x2b2d42 },
-          { s: [0.18, 0.10, 0.18], p: [0, -0.15, 0], c: 0xffd43b, glow: true },
-          { s: [0.16, 0.08, 0.16], p: [0, 0.24, 0], c: 0xffd43b, glow: true },
-          // Stacked giant bouncy purple braid puffs (alternating 0x862e9c & 0xae3ec9 & 0xd0bfff)
-          { s: [0.28, 0.18, 0.26], p: [-0.03, 0.38, 0], r: [0, 0, 0.14], c: 0x862e9c, glow: true },
-          { s: [0.32, 0.18, 0.30], p: [0.03, 0.54, 0], r: [0, 0, -0.14], c: 0xae3ec9, glow: true },
-          { s: [0.36, 0.20, 0.32], p: [-0.03, 0.71, 0], r: [0, 0, 0.12], c: 0x9c36b5, glow: true },
-          { s: [0.34, 0.18, 0.30], p: [0.02, 0.88, 0], r: [0, 0, -0.12], c: 0xd0bfff, glow: true },
-          // Golden Star Hair-Ribbon Bow & Heart Tassel at the whip tip!
-          { s: [0.38, 0.09, 0.16], p: [0, 1.00, 0.04], r: [0, 0, 0.22], c: 0xffd43b, glow: true },
-          { s: [0.38, 0.09, 0.16], p: [0, 1.00, 0.04], r: [0, 0, -0.22], c: 0xffd43b, glow: true },
-          { s: [0.22, 0.22, 0.14], p: [0, 1.06, 0.06], r: [0, 0, 0.785], c: 0xffe066, glow: true },
-          { s: [0.24, 0.16, 0.22], p: [0, 1.18, 0], c: 0x862e9c, glow: true },
+          { s: [0.12, 0.36, 0.12], p: [0, 0.04, 0], c: 0x1e293b },
+          { s: [0.18, 0.10, 0.18], p: [0, -0.16, 0], c: 0xffd43b, glow: true },
+          // Golden lotus crossguard
+          { s: [0.46, 0.10, 0.16], p: [0, 0.26, 0], c: 0xffd43b, glow: true },
+          { s: [0.22, 0.16, 0.18], p: [0, 0.28, 0], c: 0x3bc9db, glow: true },
+          // Stepped glowing cyan & white Honmoon blade
+          { s: [0.20, 0.68, 0.08], p: [0, 0.66, 0], c: 0x3bc9db, glow: true },
+          { s: [0.12, 0.74, 0.10], p: [0, 0.70, 0], c: 0xe3fafc, glow: true },
+          { s: [0.14, 0.16, 0.08], p: [0, 1.12, 0], c: 0xffffff, glow: true },
         ],
       };
 
     case 'golden_sahur_mallet':
-      // 3. iron_sledge / golden_sahur_mallet: Breezy-Bake Golden Teapot & Crumpet Launcher
-      // (Pastel-pink porcelain teapot + stack of buttered golden crumpets)
+      // 3. Underground Cookie Drill Pickaxe (Minecraft Golden & Diamond Miner Pickaxe with Cookie Core)
       return {
         glowEmissive: 0xffb830,
         glowIntensity: 0.36,
         boxes: [
-          // Pastel-pink & gold tea-party staff handle
-          { s: [0.12, 0.64, 0.12], p: [0, 0.18, 0], c: 0xf783ac },
-          { s: [0.18, 0.10, 0.18], p: [0, -0.14, 0], c: 0xffd43b, glow: true },
-          { s: [0.16, 0.08, 0.16], p: [0, 0.24, 0], c: 0xfff3bf, glow: true },
-          { s: [0.46, 0.07, 0.46], p: [0, 0.52, 0], c: 0xffffff, glow: true },
-          // Pastel-Pink & Gold Porcelain Teapot Body (y = 0.72)
-          { s: [0.42, 0.34, 0.42], p: [0, 0.72, 0], c: 0xff85c0, glow: true },
-          { s: [0.44, 0.08, 0.44], p: [0, 0.72, 0], c: 0xffd43b, glow: true },
-          // Curved Golden Teapot Spout (+X) & Dainty Porcelain Handle (-X)
-          { s: [0.18, 0.10, 0.10], p: [0.28, 0.76, 0], r: [0, 0, 0.42], c: 0xffd43b, glow: true },
-          { s: [0.12, 0.14, 0.10], p: [0.36, 0.86, 0], r: [0, 0, 0.18], c: 0xfff3bf, glow: true },
-          { s: [0.14, 0.24, 0.08], p: [-0.26, 0.74, 0], c: 0xfff0f6, glow: true },
-          // Stack of Warm Buttered Golden Crumpets perched on the Teapot Lid!
-          { s: [0.34, 0.09, 0.34], p: [0, 0.94, 0], c: 0xf59f00, glow: true },
-          { s: [0.32, 0.09, 0.32], p: [0, 1.04, 0], c: 0xffd43b, glow: true },
-          { s: [0.16, 0.07, 0.16], p: [0, 1.12, 0], c: 0xfff9db, glow: true },
+          // Oak & gold-banded pickaxe shaft
+          { s: [0.13, 0.78, 0.13], p: [0, 0.26, 0], c: 0x8b5a2b },
+          { s: [0.18, 0.10, 0.18], p: [0, -0.15, 0], c: 0xffd43b, glow: true },
+          { s: [0.16, 0.08, 0.16], p: [0, 0.42, 0], c: 0xffd43b, glow: true },
+          // Stepped Voxel Pickaxe Head + Glowing Cyan Diamond Tips + Golden Cookie Core
+          { s: [0.74, 0.20, 0.20], p: [0, 0.78, 0], c: 0xffd43b, glow: true },
+          { s: [0.22, 0.26, 0.22], p: [-0.36, 0.70, 0], c: 0x3bc9db, glow: true },
+          { s: [0.22, 0.26, 0.22], p: [0.36, 0.70, 0], c: 0x3bc9db, glow: true },
+          { s: [0.28, 0.28, 0.24], p: [0, 0.84, 0], c: 0xd97706, glow: true },
+          { s: [0.16, 0.18, 0.16], p: [0, 1.04, 0], c: 0xfff9db, glow: true },
         ],
       };
 
     case 'neon_thunder_taiko':
-      // 4. diamond_cleaver / neon_thunder_taiko: KickinChicken's Rainbow Makeup Blaster
-      // (39:11 neon paint blaster with lipstick tube, blush brush & rainbow star barrel)
+      // 4. Porcelain Peony Bloom Mallet (Blue-and-White Joseon Porcelain Vase Mallet topped with Blooming Peony)
       return {
         glowEmissive: 0xff6b9d,
         glowIntensity: 0.36,
         boxes: [
-          // Sleek purple & gold makeup grip handle
-          { s: [0.13, 0.66, 0.13], p: [0, 0.18, 0], c: 0x5f3dc4 },
+          { s: [0.13, 0.66, 0.13], p: [0, 0.18, 0], c: 0x1d4ed8 },
           { s: [0.18, 0.12, 0.18], p: [0, -0.15, 0], c: 0xffd43b, glow: true },
-          { s: [0.16, 0.08, 0.16], p: [0, 0.22, 0], c: 0xff6b9d, glow: true },
-          // Rainbow Star Paint Barrel (pink, yellow, cyan, green stripes)
-          { s: [0.40, 0.34, 0.64], p: [0, 0.74, 0], c: 0xff6b9d, glow: true },
-          { s: [0.42, 0.12, 0.66], p: [0, 0.74, 0], c: 0xffd43b, glow: true },
-          { s: [0.44, 0.30, 0.16], p: [0, 0.74, 0.18], c: 0x39d5ff, glow: true },
-          { s: [0.44, 0.30, 0.16], p: [0, 0.74, -0.18], c: 0x51cf66, glow: true },
-          // Hot-Pink Lipstick Tube Nozzle (+Z) & Fluffy Powder Blush Brush (-Z)
-          { s: [0.22, 0.22, 0.18], p: [0, 0.74, 0.40], c: 0xffd43b, glow: true },
-          { s: [0.16, 0.16, 0.20], p: [0, 0.74, 0.54], c: 0xff4d6d, glow: true },
-          { s: [0.32, 0.32, 0.16], p: [0, 0.74, -0.40], c: 0xffb3d9, glow: true },
-          // Golden KickinChicken Star Sight on top
-          { s: [0.24, 0.24, 0.10], p: [0, 1.02, 0], r: [0, 0, 0.785], c: 0xffe066, glow: true },
+          // Blue-and-White Porcelain Mallet Drum Head
+          { s: [0.46, 0.42, 0.62], p: [0, 0.74, 0], c: 0xf8fafc, glow: true },
+          { s: [0.50, 0.16, 0.66], p: [0, 0.74, 0], c: 0x1d4ed8, glow: true },
+          { s: [0.36, 0.36, 0.14], p: [0, 0.74, 0.36], c: 0xff6b9d, glow: true },
+          { s: [0.36, 0.36, 0.14], p: [0, 0.74, -0.36], c: 0xff6b9d, glow: true },
+          // Blooming Minhwa Peony on top of Mallet
+          { s: [0.38, 0.14, 0.38], p: [0, 0.98, 0], c: 0x40c057, glow: true },
+          { s: [0.28, 0.24, 0.28], p: [0, 1.12, 0], c: 0xff85c0, glow: true },
+          { s: [0.16, 0.16, 0.16], p: [0, 1.24, 0], c: 0xffd43b, glow: true },
         ],
       };
 
     case 'rainbow_mega_hammer':
     default:
-      // 5. rainbow_blade / rainbow_mega_hammer: Prototype Remote-Control & Magnet Wrench
-      // (52:56 glowing cyber-remote with twin antennas, rainbow plasma rings & giant magnet wrench)
+      // 5. Minecraft Diamond Rescue Sword (Iconic Stepped Voxel Cyan Diamond Greatsword with Gold Honmoon Guard)
       return {
-        glowEmissive: 0x39d5ff,
+        glowEmissive: 0x3bc9db,
         glowIntensity: 0.38,
         boxes: [
-          // Cyber-metallic shaft with glowing rainbow plasma rings
-          { s: [0.13, 0.68, 0.13], p: [0, 0.18, 0], c: 0x343a40 },
-          { s: [0.20, 0.12, 0.20], p: [0, -0.16, 0], c: 0xffd43b, glow: true },
-          { s: [0.18, 0.08, 0.18], p: [0, 0.18, 0], c: 0x39d5ff, glow: true },
-          { s: [0.18, 0.08, 0.18], p: [0, 0.40, 0], c: 0xff6b9d, glow: true },
-          // Prototype Cyber-Remote Control Box Core (52:56) with red/green/cyan buttons & screen
-          { s: [0.44, 0.38, 0.30], p: [0, 0.72, 0], c: 0x2b2d42 },
-          { s: [0.32, 0.16, 0.06], p: [0, 0.78, 0.16], c: 0x39d5ff, glow: true },
-          { s: [0.10, 0.10, 0.07], p: [-0.10, 0.62, 0.16], c: 0xff595e, glow: true },
-          { s: [0.10, 0.10, 0.07], p: [0.10, 0.62, 0.16], c: 0x51cf66, glow: true },
-          // Twin Cyber Remote Antennas with glowing yellow/magenta tips
-          { s: [0.05, 0.26, 0.05], p: [-0.14, 1.02, -0.04], r: [0, 0, 0.22], c: 0xadb5bd, glow: true },
-          { s: [0.05, 0.26, 0.05], p: [0.14, 1.02, -0.04], r: [0, 0, -0.22], c: 0xadb5bd, glow: true },
-          { s: [0.11, 0.11, 0.11], p: [-0.20, 1.16, -0.04], c: 0xffd43b, glow: true },
-          { s: [0.11, 0.11, 0.11], p: [0.20, 1.16, -0.04], c: 0xff6b9d, glow: true },
-          // Giant U-Shaped Red & Blue Magnet Wrench Claws (+Z and -Z) with silver tips!
-          { s: [0.36, 0.14, 0.68], p: [0, 0.86, 0], c: 0xe03131, glow: true },
-          { s: [0.36, 0.14, 0.68], p: [0, 0.58, 0], c: 0x228be6, glow: true },
-          { s: [0.38, 0.14, 0.14], p: [0, 0.86, 0.36], c: 0xf8f9fa, glow: true },
-          { s: [0.38, 0.14, 0.14], p: [0, 0.58, 0.36], c: 0xf8f9fa, glow: true },
-          { s: [0.38, 0.14, 0.14], p: [0, 0.86, -0.36], c: 0xf8f9fa, glow: true },
-          { s: [0.38, 0.14, 0.14], p: [0, 0.58, -0.36], c: 0xf8f9fa, glow: true },
+          // Dark oak & gold pommel grip
+          { s: [0.14, 0.38, 0.14], p: [0, 0.04, 0], c: 0x5c3d24 },
+          { s: [0.22, 0.14, 0.22], p: [0, -0.18, 0], c: 0x3bc9db, glow: true },
+          { s: [0.26, 0.08, 0.26], p: [0, -0.10, 0], c: 0xffd43b, glow: true },
+          // Stepped Minecraft Diamond Crossguard
+          { s: [0.64, 0.14, 0.20], p: [0, 0.28, 0], c: 0x15aabf, glow: true },
+          { s: [0.46, 0.18, 0.22], p: [0, 0.32, 0], c: 0xffd43b, glow: true },
+          { s: [0.18, 0.18, 0.18], p: [-0.32, 0.36, 0], c: 0x3bc9db, glow: true },
+          { s: [0.18, 0.18, 0.18], p: [0.32, 0.36, 0], c: 0x3bc9db, glow: true },
+          // Broad Stepped Cyan Diamond Blade + Glowing White Core
+          { s: [0.30, 0.78, 0.12], p: [0, 0.78, 0], c: 0x22b8cf, glow: true },
+          { s: [0.20, 0.84, 0.14], p: [0, 0.82, 0], c: 0x99e9f2, glow: true },
+          { s: [0.12, 0.88, 0.16], p: [0, 0.86, 0], c: 0xffffff, glow: true },
+          { s: [0.18, 0.18, 0.12], p: [0, 1.24, 0], c: 0x3bc9db, glow: true },
         ],
       };
   }
@@ -414,7 +372,7 @@ export function buildWeaponMesh(weaponId = 'wooden_kentungan_bat') {
 export const createWeaponMesh = buildWeaponMesh;
 
 // ---------------------------------------------------------------------------
-// 2. 4 Hub Prank Contraptions (Tier 1..3 across the 4 Hub Pads)
+// 2. 4 Hub Blue-and-White Minhwa Porcelain Peony Flowerpots (Tier 0..3 across the 4 Hub Pads)
 // Rooted at y = 0 so they sit flush on the 4 Hub Pads!
 // ---------------------------------------------------------------------------
 
@@ -428,13 +386,20 @@ function normalizePotTier(tier) {
 export function buildFlowerpotMesh(tier = 1, padIndex = 0) {
   const t = normalizePotTier(tier);
   if (t <= 0) {
-    // Tier 0: Tipped Blue-and-White Porcelain Flowerpot lying on its side waiting to be patted upright!
+    // Tier 0: Tipped Blue-and-White Minhwa Porcelain Peony Flowerpot lying on its side with spilled soil & peony bud!
     const tippedBoxes = [
-      { s: [0.76, 0.56, 0.56], p: [-0.08, 0.30, 0], r: [0, 0, 1.38], c: 0xf8fafc, glow: true },
-      { s: [0.22, 0.60, 0.60], p: [0.02, 0.32, 0], r: [0, 0, 1.38], c: 0x1d4ed8, glow: true },
-      { s: [0.16, 0.66, 0.66], p: [0.24, 0.35, 0], r: [0, 0, 1.38], c: 0x2b7de9, glow: true },
-      { s: [0.36, 0.14, 0.36], p: [0.46, 0.10, 0], c: 0x5c3d28 },
-      { s: [0.22, 0.24, 0.22], p: [0.54, 0.22, 0], r: [0, 0, -0.45], c: 0x51cf66, glow: true },
+      // Carved stone coaster base on pad
+      { s: [1.08, 0.10, 1.08], p: [0, 0.05, 0], c: 0x64748b },
+      // Tipped White Joseon Porcelain Belly + Cobalt-Blue Bands & Lip Rim
+      { s: [0.84, 0.62, 0.62], p: [-0.10, 0.36, 0], r: [0, 0, 1.28], c: 0xf8fafc, glow: true },
+      { s: [0.24, 0.68, 0.68], p: [0.02, 0.39, 0], r: [0, 0, 1.28], c: 0x1d4ed8, glow: true },
+      { s: [0.18, 0.74, 0.74], p: [0.26, 0.44, 0], r: [0, 0, 1.28], c: 0x2563eb, glow: true },
+      { s: [0.16, 0.50, 0.50], p: [-0.42, 0.26, 0], r: [0, 0, 1.28], c: 0x1d4ed8, glow: true },
+      // Spilled dark garden soil + emerald leaves + pink Minhwa peony bud spilling out to the right
+      { s: [0.44, 0.14, 0.44], p: [0.46, 0.14, 0], c: 0x5c3d28 },
+      { s: [0.30, 0.24, 0.30], p: [0.56, 0.26, 0], r: [0, 0, -0.45], c: 0x40c057, glow: true },
+      { s: [0.26, 0.24, 0.26], p: [0.68, 0.36, 0], r: [0, 0, -0.35], c: 0xff6b9d, glow: true },
+      { s: [0.14, 0.14, 0.14], p: [0.74, 0.44, 0], c: 0xffd43b, glow: true },
     ];
     return buildVoxelGroup(tippedBoxes, {
       name: 'flowerpot_tier_0',
@@ -445,7 +410,7 @@ export function buildFlowerpotMesh(tier = 1, padIndex = 0) {
   }
 
   if (t === 1) {
-    // Tier 1: Upright Blue-and-White Joseon Porcelain Peony Pot with Emerald Sprout
+    // Tier 1: Upright Blue-and-White Joseon Porcelain Peony Pot with Emerald Sprout & Pink Peony
     const boxes = [
       { s: [1.16, 0.14, 1.16], p: [0, 0.07, 0], c: 0x1b4fa8 },
       { s: [1.02, 0.10, 1.02], p: [0, 0.18, 0], c: 0xffd026, glow: true },
@@ -519,6 +484,7 @@ export function buildFlowerpotMesh(tier = 1, padIndex = 0) {
 }
 
 export const createFlowerpotMesh = buildFlowerpotMesh;
+export const createTotemMesh = buildFlowerpotMesh;
 
 // ---------------------------------------------------------------------------
 // 3. 3D Hub Golden Prank Trophies (for the 4 Trophy Stage Pedestals)

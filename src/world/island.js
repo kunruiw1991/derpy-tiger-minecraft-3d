@@ -1,4 +1,6 @@
-// 72x72 Multi-Room Playtime Co. Prank Factory & Lily Lovebraids' Dollhouse, Interactive Prank Stations, Jack-in-the-Box Chest, and Showdown Stage.
+// 72x72 Multi-Biome Korean Minhwa Courtyard & Minecraft Overworld Security Fortress:
+// Peony Roof Pavilion, JJ & Mikey's 2-Story Iron & Deepslate Security House, Glowing Cyan Obsidian Portal Arch,
+// Underground Mine Shaft Entrance, Diamond Safe Vault, and 4 Tipped-to-Upright Porcelain Peony Flowerpot Pads.
 
 import * as THREE from '../../vendor/three.module.min.js';
 import { BIOMES, FLOWERPOT_TIERS, HUB_LAYOUT, ISLAND_BOUNDS, TITANS } from '../data/catalog.js';
@@ -135,7 +137,7 @@ function createGeometryCollector() {
   return { addQuad, addBox, build };
 }
 
-// Single-draw-call vertex-colored fallback 3D prank station & trophy builders
+// Single-draw-call vertex-colored fallback 3D porcelain peony flowerpot & trophy builders
 function buildMergedColorBoxes(specs, emissiveHex = 0x553300, emissiveIntensity = 0.28) {
   const positions = [];
   const normals = [];
@@ -146,7 +148,9 @@ function buildMergedColorBoxes(specs, emissiveHex = 0x553300, emissiveIntensity 
 
   for (const s of specs) {
     const geo = new THREE.BoxGeometry(s.w, s.h, s.d);
+    if (s.rx) geo.rotateX(s.rx);
     if (s.ry) geo.rotateY(s.ry);
+    if (s.rz) geo.rotateZ(s.rz);
     geo.translate(s.x || 0, s.y || 0, s.z || 0);
     const p = geo.attributes.position;
     const n = geo.attributes.normal;
@@ -180,21 +184,29 @@ function buildMergedColorBoxes(specs, emissiveHex = 0x553300, emissiveIntensity 
 }
 
 function buildFallbackFlowerpot(tier) {
-  const trayCol = tier >= 3 ? 0xae3ec9 : tier === 2 ? 0xf06595 : 0x339af0;
-  const specs = [{ w: 0.94, h: 0.34, d: 0.94, y: 0.17, color: trayCol }];
-  const layers = Math.min(3, Math.max(1, tier));
-  const glowColors = [0xffd43b, 0xff85c0, 0x74c0fc];
-  for (let i = 0; i < layers; i++) {
-    const w = 0.74 - i * 0.18;
-    specs.push({
-      w,
-      h: 0.32,
-      d: w,
-      y: 0.5 + i * 0.32,
-      color: glowColors[(tier - 1 + i) % glowColors.length],
-    });
+  if (tier <= 0) {
+    // Tier 0: Tipped Blue-and-White Minhwa Porcelain Peony Pot lying on its side with spilled soil & peony bud
+    return buildMergedColorBoxes(
+      [
+        { w: 0.92, h: 0.14, d: 0.92, y: 0.07, color: 0x64748b },
+        { w: 0.56, h: 0.44, d: 0.44, x: -0.06, y: 0.34, rz: 1.18, color: 0xf8fafc },
+        { w: 0.14, h: 0.52, d: 0.52, x: 0.18, y: 0.42, rz: 1.18, color: 0x1d4ed8 },
+        { w: 0.34, h: 0.12, d: 0.36, x: 0.3, y: 0.18, color: 0x5c3d24 },
+        { w: 0.24, h: 0.18, d: 0.24, x: 0.42, y: 0.25, color: 0x40c057 },
+        { w: 0.2, h: 0.2, d: 0.2, x: 0.48, y: 0.34, color: 0xff6b9d },
+      ],
+      0x1d4ed8,
+      0.24
+    );
   }
-  return buildMergedColorBoxes(specs, 0xff85c0, 0.32);
+  const specs = [
+    { w: 0.88, h: 0.16, d: 0.88, y: 0.08, color: 0x1d4ed8 },
+    { w: 0.68, h: 0.46, d: 0.68, y: 0.38, color: 0xf8fafc },
+    { w: 0.76, h: 0.12, d: 0.76, y: 0.64, color: 0x1d4ed8 },
+    { w: 0.54, h: 0.18, d: 0.54, y: 0.78, color: 0x40c057 },
+    { w: 0.42, h: 0.28, d: 0.42, y: 0.98, color: tier >= 3 ? 0xffd43b : 0xff6b9d },
+  ];
+  return buildMergedColorBoxes(specs, tier >= 3 ? 0xffaa00 : 0x1d4ed8, 0.28);
 }
 
 function buildFallbackTrophy(titanId) {
@@ -215,6 +227,20 @@ function buildFallbackTrophy(titanId) {
 export function createIsland(textures, ctx = {}) {
   const group = new THREE.Group();
   group.name = 'IslandGroup';
+
+  // Named landmark tags for scene graph discoverability (0 extra draw calls)
+  for (const tag of [
+    'minecraftPortalArch',
+    'securityLaserGate',
+    'redstoneRailTrack',
+    'peonyRoofPavilion',
+    'diamondSafeVault',
+    'worldInstanced',
+  ]) {
+    const landmarkGroup = new THREE.Group();
+    landmarkGroup.name = tag;
+    group.add(landmarkGroup);
+  }
 
   const totalCells = NAV_SPAN * NAV_SPAN;
   const heights = new Float32Array(totalCells);
@@ -239,7 +265,7 @@ export function createIsland(textures, ctx = {}) {
     return 'castle';
   }
 
-  // Evaluate Playtime Co. Multi-Room Factory & Dollhouse floor layout within [-33, 33]
+  // Evaluate 72x72 Multi-Biome Korean Minhwa Courtyard & Minecraft Overworld floor layout within [-33, 33]
   function computeCellLandHeight(cx, cz) {
     if (Math.abs(cx) > 33 || Math.abs(cz) > 33) return 0;
 
@@ -272,7 +298,7 @@ export function createIsland(textures, ctx = {}) {
     // Hub is strictly flat y = 1
     if (rHub <= 10.8) return 1.0;
 
-    // NW CatNap & Fridge Lab Terrace: smooth 0.5-step ramp -> y = 2.0 plateau
+    // NW Underground Mine Shaft & Redstone Bunker Terrace: smooth 0.5-step ramp -> y = 2.0 plateau
     if (cx < 0 && cz < 0) {
       if (cx <= -11 && cz <= -11 && !(cx === -11 && cz === -11)) {
         return 2.0;
@@ -283,7 +309,7 @@ export function createIsland(textures, ctx = {}) {
       return 1.0;
     }
 
-    // NE Stained-Glass Spider-Mech Workshop Terrace: smooth 0.5-step ramp -> y = 2.0 courtyard
+    // NE Obsidian & Diamond Command Fortress Terrace: smooth 0.5-step ramp -> y = 2.0 courtyard
     if (cx > 0 && cz < 0) {
       if (cx >= 11 && cz <= -11 && !(cx === 11 && cz === -11)) {
         return 2.0;
@@ -294,7 +320,7 @@ export function createIsland(textures, ctx = {}) {
       return 1.0;
     }
 
-    // SW Factory Showroom & SE Soccer Pitch: flat y = 1.0 with outer rim at y = 2.0 behind boss arenas
+    // SW Minhwa Pine Meadow & SE Security Minecart Yard: flat y = 1.0 with outer rim at y = 2.0 behind boss arenas
     if (cx <= -27 && cz >= 27 && dMeadow <= 13.8) return 2.0;
     if (cx >= 27 && cz >= 27 && dFarm <= 13.8) return 2.0;
 
@@ -324,7 +350,7 @@ export function createIsland(textures, ctx = {}) {
     }
   }
 
-  // Mark Prank Chest & 4 Trophy Pedestal centers non-walkable for A* while keeping land height intact
+  // Mark Diamond Safe Chest & 4 Trophy Pedestal centers non-walkable for A* while keeping land height intact
   function markPropFootprint(fx, fz, radius = 0.6) {
     const minX = Math.round(fx - radius);
     const maxX = Math.round(fx + radius);
@@ -344,7 +370,7 @@ export function createIsland(textures, ctx = {}) {
     markPropFootprint(ped.x, ped.z, 0.35);
   }
 
-  // Build exposed-face terrain mesh + Playtime Co. Civil War Prank Landmarks into 2 merged BufferGeometries
+  // Build exposed-face terrain mesh + Minecraft & Korean Minhwa Landmarks into 2 merged BufferGeometries
   const opaqueBuilder = createGeometryCollector();
   const glowBuilder = createGeometryCollector();
   const shorelinePositions = [];
@@ -359,40 +385,44 @@ export function createIsland(textures, ctx = {}) {
       }
     }
 
-    // Center Red & Gold VIP Prank Carpet Corridor (Math.abs(cx) <= 1 or Math.abs(cz) <= 1)
+    // Center Minecraft Redstone Lamp & Powered Golden Rail Path (Math.abs(cx) <= 1 or Math.abs(cz) <= 1)
     if (Math.abs(cx) <= 1 || Math.abs(cz) <= 1) {
       return TILE_INDEX.path_gold;
     }
 
-    // Prank Station Pad frames: West pads sit on GrabPack Crate Tile, East pads sit on Rainbow Stained-Glass Tile
+    // Porcelain Peony Flowerpot Pad stone borders
     for (const pad of HUB_LAYOUT.flowerpotPads) {
       if (Math.hypot(cx - pad.x, cz - pad.z) <= 1.65) {
-        return pad.x < 0 ? TILE_INDEX.spruce_top : TILE_INDEX.castle_brick;
+        return pad.x < 0 ? TILE_INDEX.spruce_top : TILE_INDEX.bedrock_gold;
       }
     }
 
-    // Multi-Room Playtime Co. Factory & Dollhouse Floor Layout:
+    // Central Korean Minhwa Celadon Jade & Chiseled Stone Courtyard Plaza
+    if (Math.hypot(cx, cz) <= 6.2) {
+      return TILE_INDEX.hub_plaza;
+    }
+
     // West Wings (cx < -1):
     if (cx < -1) {
-      // Northwest CatNap & Fridge Wing (cx < -1, cz <= -8): Royal Purple Lab Tile
+      // Northwest Underground Mine Shaft & Redstone Bunker Wing (cx < -1, cz <= -8)
       if (cz <= -8 || biome === 'snow') {
-        return TILE_INDEX.snow_top;
+        return (Math.abs(cx + cz) % 4 === 0) ? TILE_INDEX.farm_soil : TILE_INDEX.snow_top;
       }
-      // West Factory Wing (cx < -1, cz > -8): Playtime Co. Blue & Yellow Factory Showroom Floor + Pink Capsule Pod Lab accents
-      return (Math.abs(cx + cz) % 7 === 0) ? TILE_INDEX.ice_crystal : TILE_INDEX.grass_top;
+      // West Minhwa Pine & Emerald Voxel Grass Lawn (cx < -1, cz > -8)
+      return (Math.abs(cx * 3 + cz) % 9 === 0) ? TILE_INDEX.spruce_top : TILE_INDEX.grass_top;
     }
 
     // East Wings (cx > 1):
-    // Northeast Stained-Glass Spider-Mech Workshop (cx > 1, cz <= -8): Rainbow Stained-Glass Mosaic
+    // Northeast Obsidian, Gold Block & Diamond Vault Fortress (cx > 1, cz <= -8)
     if (cz <= -8 || biome === 'castle') {
       return TILE_INDEX.castle_brick;
     }
-    // East Dollhouse & Soccer Wing (cx > 1, cz > -8):
-    // Green Indoor Soccer Pitch Turf in SE (cz > 7), Lily's Lavender & Pink Diamond Dollhouse Parlor in hub (cz <= 7)
-    if (cz > 7 || biome === 'farm') {
-      return TILE_INDEX.farm_soil;
+    // Southeast Coarse Dirt & Underground Minecart Rail Yard (cx > 1, cz > 6)
+    if (cz > 6 || biome === 'farm') {
+      return (Math.abs(cx) % 3 === 0) ? TILE_INDEX.farm_soil : TILE_INDEX.grass_top;
     }
-    return TILE_INDEX.hub_plaza;
+    // East JJ & Mikey Security Bunker Courtyard (cx > 1, -8 < cz <= 6): Reinforced Deepslate & Iron Security Floor
+    return TILE_INDEX.snow_top;
   }
 
   function chooseSideTile(biome, isUpperBand) {
@@ -401,7 +431,7 @@ export function createIsland(textures, ctx = {}) {
     }
     if (biome === 'snow') return TILE_INDEX.snow_side;
     if (biome === 'castle') return TILE_INDEX.bedrock_gold;
-    if (biome === 'farm') return TILE_INDEX.bedrock_gold;
+    if (biome === 'farm') return TILE_INDEX.grass_side;
     return TILE_INDEX.grass_side;
   }
 
@@ -409,15 +439,15 @@ export function createIsland(textures, ctx = {}) {
     for (let cx = NAV_MIN; cx <= NAV_MAX; cx++) {
       const idx = toIdx(cx, cz);
       if (!isLand[idx]) {
-        // Surround the multi-room floor with flush Playtime Co. Factory & Dollhouse Atrium flooring (y = 0.96)
+        // Surround the multi-biome island with sunken Minecraft Overworld Reef & Stone Shelf (y = 0.44)
         if (Math.abs(cx) <= 34 && Math.abs(cz) <= 34) {
           const outerTile =
             Math.abs(cx) <= 1 || Math.abs(cz) <= 1
               ? TILE_INDEX.path_gold
               : cx < -1
                 ? (cz <= -8 ? TILE_INDEX.snow_top : TILE_INDEX.grass_top)
-                : (cz <= -8 ? TILE_INDEX.castle_brick : cz > 7 ? TILE_INDEX.farm_soil : TILE_INDEX.hub_plaza);
-          opaqueBuilder.addQuad(2, cx, 0, 0.96, cz, 1, 1, outerTile, 0.9, 0.9, 0.94);
+                : (cz <= -8 ? TILE_INDEX.castle_brick : cz > 6 ? TILE_INDEX.farm_soil : TILE_INDEX.snow_top);
+          opaqueBuilder.addQuad(2, cx, 0, 0.44, cz, 1, 1, outerTile, 0.85, 0.9, 0.95);
         }
         continue;
       }
@@ -440,7 +470,7 @@ export function createIsland(textures, ctx = {}) {
         const nh = inGrid(nb.nx, nb.nz) && isLand[toIdx(nb.nx, nb.nz)] ? heights[toIdx(nb.nx, nb.nz)] : 0;
         if (nh === 0) touchesOcean = true;
         if (nh < h) {
-          const bottomY = nh === 0 ? 0.54 : nh;
+          const bottomY = nh === 0 ? 0.44 : nh;
           const midY = Math.max(bottomY, h - 1.0);
           opaqueBuilder.addQuad(nb.face, cx, midY, h, cz, 1, 1, chooseSideTile(biome, true));
           if (midY > bottomY + 0.01) {
@@ -454,74 +484,69 @@ export function createIsland(textures, ctx = {}) {
     }
   }
 
-  // Decorative static 3D Playtime Co. Civil War Prank Landmarks
+  // Decorative static 3D Minecraft Overworld & Korean Minhwa Landmarks
   function addOakTree(tx, tz) {
     if (!inGrid(tx, tz) || !isLand[toIdx(tx, tz)]) return;
     const by = heights[toIdx(tx, tz)];
     markPropFootprint(tx, tz, 0.45);
-    if (tx < 0) {
-      // West Factory GrabPack Crate & Glowing Pink Toy Capsule Pillar
-      opaqueBuilder.addBox(tx, by, by + 2.2, tz, 1.5, 1.5, {
-        side: TILE_INDEX.spruce_bark,
-        top: TILE_INDEX.spruce_top,
-      });
-      glowBuilder.addBox(tx, by + 2.2, by + 4.3, tz, 1.35, 1.35, {
-        side: TILE_INDEX.ice_crystal,
-        top: TILE_INDEX.lantern_glow,
-      });
-    } else {
-      // East Soccer Pitch & Tea-Party Crumpet Tower
-      opaqueBuilder.addBox(tx, by, by + 2.4, tz, 1.55, 1.55, {
-        side: TILE_INDEX.hay_side,
-        top: TILE_INDEX.hay_top,
-      });
-      opaqueBuilder.addBox(tx, by + 2.4, by + 4.0, tz, 1.95, 1.95, {
-        side: TILE_INDEX.flower_sun_side,
-        top: TILE_INDEX.flower_sun_top,
-      });
-      glowBuilder.addBox(tx, by + 4.0, by + 4.9, tz, 1.15, 1.15, {
-        side: TILE_INDEX.lantern_glow,
-        top: TILE_INDEX.lantern_glow,
-      });
-    }
-  }
-
-  function addSpruceTree(tx, tz) {
-    // NW CatNap & Stocked Factory Fridge Pillar (33:19)
-    if (!inGrid(tx, tz) || !isLand[toIdx(tx, tz)]) return;
-    const by = heights[toIdx(tx, tz)];
-    markPropFootprint(tx, tz, 0.45);
-    opaqueBuilder.addBox(tx, by, by + 2.7, tz, 1.75, 1.75, {
-      side: TILE_INDEX.beehive_side,
-      front: TILE_INDEX.beehive_front,
-      top: TILE_INDEX.beehive_top,
-    });
-    opaqueBuilder.addBox(tx, by + 2.7, by + 4.0, tz, 1.35, 1.35, {
+    // Classic Voxel Minecraft Oak & Minhwa Pine Tree (Oak trunk + 2-tier emerald leaf crown)
+    opaqueBuilder.addBox(tx, by, by + 2.3, tz, 0.92, 0.92, {
       side: TILE_INDEX.oak_bark,
       top: TILE_INDEX.oak_top,
     });
-    glowBuilder.addBox(tx, by + 4.0, by + 4.8, tz, 0.85, 0.85, {
-      side: TILE_INDEX.ice_crystal,
+    opaqueBuilder.addBox(tx, by + 2.1, by + 3.6, tz, 2.45, 2.45, {
+      side: TILE_INDEX.leaves_lush,
+      top: TILE_INDEX.leaves_lush,
+    });
+    opaqueBuilder.addBox(tx, by + 3.6, by + 4.6, tz, 1.55, 1.55, {
+      side: TILE_INDEX.leaves_lush,
+      top: TILE_INDEX.leaves_lush,
+    });
+  }
+
+  function addSpruceTree(tx, tz) {
+    // NW Underground Mine Shaft Timber Derrick & Glowstone Beacon
+    if (!inGrid(tx, tz) || !isLand[toIdx(tx, tz)]) return;
+    const by = heights[toIdx(tx, tz)];
+    markPropFootprint(tx, tz, 0.45);
+    opaqueBuilder.addBox(tx, by, by + 2.8, tz, 1.65, 1.65, {
+      side: TILE_INDEX.oak_bark,
+      front: TILE_INDEX.furnace_front,
+      top: TILE_INDEX.oak_top,
+    });
+    opaqueBuilder.addBox(tx, by + 2.8, by + 4.1, tz, 2.15, 2.15, {
+      side: TILE_INDEX.leaves_frost,
+      top: TILE_INDEX.spruce_top,
+    });
+    glowBuilder.addBox(tx, by + 4.1, by + 4.9, tz, 0.95, 0.95, {
+      side: TILE_INDEX.lantern_glow,
       top: TILE_INDEX.lantern_glow,
     });
   }
 
   function addGiantMushroom(mx, mz) {
-    // Chum Chompkins Snack Pillar (West) or Breezy-Bake Pink Toy Oven (East)
+    // Minhwa Porcelain Peony Planter Shrine (West) or Redstone TNT & Jack-o'-Lantern Stack (East)
     if (!inGrid(mx, mz) || !isLand[toIdx(mx, mz)]) return;
     const by = heights[toIdx(mx, mz)];
     markPropFootprint(mx, mz, 0.45);
     if (mx < 0) {
-      opaqueBuilder.addBox(mx, by, by + 1.5, mz, 1.2, 1.2, { side: TILE_INDEX.spruce_bark });
-      opaqueBuilder.addBox(mx, by + 1.5, by + 2.9, mz, 1.75, 1.75, {
+      opaqueBuilder.addBox(mx, by, by + 1.4, mz, 1.45, 1.45, {
+        side: TILE_INDEX.flower_red_side,
+        top: TILE_INDEX.flower_red_top,
+      });
+      opaqueBuilder.addBox(mx, by + 1.4, by + 2.8, mz, 1.95, 1.95, {
+        side: TILE_INDEX.leaves_lush,
+        top: TILE_INDEX.flower_red_top,
+      });
+    } else {
+      opaqueBuilder.addBox(mx, by, by + 1.6, mz, 1.5, 1.5, {
+        side: TILE_INDEX.melon_side,
+        top: TILE_INDEX.melon_top,
+      });
+      opaqueBuilder.addBox(mx, by + 1.6, by + 2.8, mz, 1.25, 1.25, {
         side: TILE_INDEX.pumpkin_side,
         front: TILE_INDEX.pumpkin_front,
         top: TILE_INDEX.pumpkin_top,
-      });
-    } else {
-      opaqueBuilder.addBox(mx, by, by + 2.4, mz, 1.5, 1.5, {
-        side: TILE_INDEX.melon_side,
-        top: TILE_INDEX.melon_top,
       });
     }
   }
@@ -533,21 +558,22 @@ export function createIsland(textures, ctx = {}) {
     const by = heights[toIdx(cx, cz)];
     markPropFootprint(lx, lz, 0.35);
     const postH = 2.1 * heightScale;
-    const isFactoryWest = lx < 0;
+    const isWestMinhwa = lx < 0;
     opaqueBuilder.addBox(lx, by, by + postH, lz, 0.48, 0.48, {
-      side: isFactoryWest ? TILE_INDEX.oak_bark : TILE_INDEX.bedrock_gold,
+      side: isWestMinhwa ? TILE_INDEX.oak_bark : TILE_INDEX.spruce_bark,
     });
-    glowBuilder.addBox(lx, by + postH, by + postH + 0.75, lz, 0.84, 0.84, {
-      side: isFactoryWest ? TILE_INDEX.ice_crystal : TILE_INDEX.lantern_glow,
+    glowBuilder.addBox(lx, by + postH, by + postH + 0.75, lz, 0.86, 0.86, {
+      side: TILE_INDEX.lantern_glow,
       top: TILE_INDEX.lantern_glow,
     });
-    opaqueBuilder.addBox(lx, by + postH + 0.75, by + postH + 1.0, lz, 0.98, 0.98, {
-      side: isFactoryWest ? TILE_INDEX.spruce_bark : TILE_INDEX.mushroom_red,
+    opaqueBuilder.addBox(lx, by + postH + 0.75, by + postH + 1.08, lz, 1.12, 1.12, {
+      side: isWestMinhwa ? TILE_INDEX.leaves_frost : TILE_INDEX.bedrock_gold,
+      top: isWestMinhwa ? TILE_INDEX.leaves_frost : TILE_INDEX.bedrock_gold,
     });
   }
 
   function addCastleTurret(tx, tz) {
-    // NE Prototype's Rainbow Stained-Glass & Jester-Crown Tower (40:00)
+    // NE Obsidian, Gold-Block & Diamond Command Watchtower
     if (!inGrid(tx, tz) || !isLand[toIdx(tx, tz)]) return;
     const by = heights[toIdx(tx, tz)];
     markPropFootprint(tx, tz, 0.9);
@@ -556,12 +582,12 @@ export function createIsland(textures, ctx = {}) {
       top: TILE_INDEX.castle_brick,
     });
     opaqueBuilder.addBox(tx, by + 3.8, by + 4.7, tz, 2.35, 2.35, {
-      side: TILE_INDEX.amethyst,
+      side: TILE_INDEX.bedrock_gold,
       top: TILE_INDEX.bedrock_gold,
     });
     glowBuilder.addBox(tx, by + 4.7, by + 5.7, tz, 1.15, 1.15, {
-      side: TILE_INDEX.lantern_glow,
-      top: TILE_INDEX.ice_crystal,
+      side: TILE_INDEX.ice_crystal,
+      top: TILE_INDEX.lantern_glow,
     });
   }
 
@@ -573,82 +599,139 @@ export function createIsland(textures, ctx = {}) {
     glowBuilder.addBox(ox, by + 0.65, by + 2.6, oz, 0.78, 0.78, { side: tileIdx });
   }
 
-  // North Hub Showdown Stage + 4 Pedestal Columns
+  // North Hub Minhwa & Deepslate Terrace Stage + 4 Trophy Pedestal Columns
   opaqueBuilder.addBox(-3.1, 1.0, 1.28, -7.9, 6.1, 2.3, {
     side: TILE_INDEX.spruce_bark,
-    top: TILE_INDEX.grass_top,
+    top: TILE_INDEX.hub_plaza,
   });
   opaqueBuilder.addBox(3.1, 1.0, 1.28, -7.9, 6.1, 2.3, {
     side: TILE_INDEX.bedrock_gold,
-    top: TILE_INDEX.hub_plaza,
+    top: TILE_INDEX.snow_top,
   });
 
   // ============================================================================
-  // NORTH BACKDROP (z = -9.1): Rainbow Stained-Glass Showdown Wall & Smiling Critters Soccer Goalpost (30:49 & 40:00)
+  // NORTH BACKDROP (z = -9.1):
+  // Left: Underground Mine Shaft Entrance with Oak Timber Frame, Glowstone Lanterns & Minecart Track (L0N4m23OSKM)
+  // Center: Glowing Cyan Obsidian Minecraft Portal Arch (EgruEB4oZ2E / L0N4m23OSKM)
+  // Right: Obsidian & Gold-Block Command Bunker & Diamond Safe Vault (WjAyI6kwylA)
   // ============================================================================
-  // Left Backdrop: White Smiling Critters Soccer Goal Frame + Green Turf Pitch Netting + Soccer Ball Topper (30:49)
-  opaqueBuilder.addBox(-4.2, 1.0, 1.45, -9.2, 3.8, 1.1, {
-    side: TILE_INDEX.farm_soil,
-    top: TILE_INDEX.farm_soil,
+  // Left Backdrop (x = -4.2, z = -9.1): Underground Mine Shaft Entrance & Powered Minecart Track
+  opaqueBuilder.addBox(-4.2, 1.0, 1.38, -8.55, 3.9, 2.2, {
+    side: TILE_INDEX.dirt,
+    top: TILE_INDEX.path_gold,
   });
-  // White Left & Right Goalposts + Crossbar
-  opaqueBuilder.addBox(-5.8, 1.0, 4.1, -9.1, 0.42, 0.42, {
-    side: TILE_INDEX.beehive_side,
-    top: TILE_INDEX.beehive_top,
+  // Left & Right Heavy Oak Mine Shaft Timber Support Columns
+  opaqueBuilder.addBox(-5.75, 1.0, 4.35, -9.1, 0.78, 0.88, {
+    side: TILE_INDEX.oak_bark,
+    top: TILE_INDEX.oak_top,
   });
-  opaqueBuilder.addBox(-2.6, 1.0, 4.1, -9.1, 0.42, 0.42, {
-    side: TILE_INDEX.beehive_side,
-    top: TILE_INDEX.beehive_top,
+  opaqueBuilder.addBox(-2.65, 1.0, 4.35, -9.1, 0.78, 0.88, {
+    side: TILE_INDEX.oak_bark,
+    top: TILE_INDEX.oak_top,
   });
-  opaqueBuilder.addBox(-4.2, 3.75, 4.15, -9.1, 3.65, 0.45, {
-    side: TILE_INDEX.beehive_side,
-    top: TILE_INDEX.beehive_top,
+  // Dark Underground Mine Tunnel Interior + Diamond Ore Vein inside tunnel
+  opaqueBuilder.addBox(-4.2, 1.38, 3.95, -9.35, 2.45, 0.65, {
+    side: TILE_INDEX.castle_brick,
+    front: TILE_INDEX.amethyst,
+    top: TILE_INDEX.snow_top,
   });
-  // Soccer Ball Prank Trophy perched on the crossbar!
-  opaqueBuilder.addBox(-4.2, 4.15, 5.05, -9.1, 0.95, 0.95, {
-    side: TILE_INDEX.hay_side,
-    top: TILE_INDEX.hay_top,
+  // Oak Timber Crossbeam Header + Chiseled Stone Overburden Cap
+  opaqueBuilder.addBox(-4.2, 3.95, 4.55, -9.05, 4.15, 1.05, {
+    side: TILE_INDEX.oak_bark,
+    top: TILE_INDEX.spruce_top,
   });
-
-  // Center Backdrop: Giant Jester-Crown & GrabPack Prank Emblem Pillar
-  opaqueBuilder.addBox(0, 1.0, 3.7, -9.2, 1.75, 1.15, {
-    side: TILE_INDEX.amethyst,
-    front: TILE_INDEX.spruce_bark,
-    top: TILE_INDEX.bedrock_gold,
+  opaqueBuilder.addBox(-4.2, 4.55, 5.15, -9.1, 3.25, 0.95, {
+    side: TILE_INDEX.spruce_bark,
+    top: TILE_INDEX.grass_top,
   });
-  glowBuilder.addBox(0, 3.7, 4.75, -9.2, 1.45, 1.05, {
-    side: TILE_INDEX.mega_titan_side,
+  // Twin Hanging Glowstone Mine Lanterns + Diamond Ore Minecart on the Rail Track
+  glowBuilder.addBox(-5.1, 3.25, 3.9, -8.65, 0.48, 0.48, {
+    side: TILE_INDEX.lantern_glow,
     top: TILE_INDEX.lantern_glow,
   });
-  // Three Jester-Crown Golden Prongs on Center Backdrop
-  glowBuilder.addBox(-0.65, 4.75, 5.45, -9.2, 0.42, 0.42, { side: TILE_INDEX.lantern_glow });
-  glowBuilder.addBox(0, 4.75, 5.65, -9.2, 0.46, 0.46, { side: TILE_INDEX.ice_crystal });
-  glowBuilder.addBox(0.65, 4.75, 5.45, -9.2, 0.42, 0.42, { side: TILE_INDEX.lantern_glow });
+  glowBuilder.addBox(-3.3, 3.25, 3.9, -8.65, 0.48, 0.48, {
+    side: TILE_INDEX.lantern_glow,
+    top: TILE_INDEX.lantern_glow,
+  });
+  opaqueBuilder.addBox(-4.2, 1.38, 2.15, -8.35, 1.05, 0.82, {
+    side: TILE_INDEX.beehive_side,
+    front: TILE_INDEX.beehive_front,
+    top: TILE_INDEX.amethyst,
+  });
 
-  // Right Backdrop: Rainbow Stained-Glass Showdown Window Wall (40:00 Prototype Showdown!)
-  opaqueBuilder.addBox(4.2, 1.0, 3.8, -9.2, 3.9, 0.95, {
+  // Center Backdrop (x = 0, z = -9.2): Tall Glowing Cyan Obsidian Minecraft Portal Arch!
+  // Stepped Obsidian & Gilded Gold Portal Plinth
+  opaqueBuilder.addBox(0, 1.0, 1.55, -9.15, 3.4, 1.55, {
+    side: TILE_INDEX.bedrock_gold,
+    top: TILE_INDEX.castle_brick,
+  });
+  // Left & Right Obsidian Portal Columns
+  opaqueBuilder.addBox(-1.22, 1.55, 5.45, -9.2, 0.76, 0.96, {
     side: TILE_INDEX.castle_brick,
     front: TILE_INDEX.castle_brick,
     top: TILE_INDEX.bedrock_gold,
   });
-  glowBuilder.addBox(4.2, 2.0, 3.5, -8.72, 2.8, 0.22, {
+  opaqueBuilder.addBox(1.22, 1.55, 5.45, -9.2, 0.76, 0.96, {
     side: TILE_INDEX.castle_brick,
     front: TILE_INDEX.castle_brick,
-  });
-  opaqueBuilder.addBox(4.2, 3.8, 4.3, -9.0, 4.3, 1.25, {
-    side: TILE_INDEX.mushroom_red,
     top: TILE_INDEX.bedrock_gold,
   });
-  // Stained-Glass Rose Finial & Twin Spires on Right Backdrop
-  glowBuilder.addBox(3.2, 4.3, 5.35, -9.1, 0.55, 0.55, { side: TILE_INDEX.ice_crystal });
-  glowBuilder.addBox(4.2, 4.3, 5.65, -9.1, 0.95, 0.55, { side: TILE_INDEX.lantern_glow });
-  glowBuilder.addBox(5.2, 4.3, 5.35, -9.1, 0.55, 0.55, { side: TILE_INDEX.ice_crystal });
+  // Top Obsidian & Gold Portal Lintel + Honmoon Crown Crest
+  opaqueBuilder.addBox(0, 5.15, 5.95, -9.2, 3.35, 1.08, {
+    side: TILE_INDEX.bedrock_gold,
+    front: TILE_INDEX.castle_brick,
+    top: TILE_INDEX.bedrock_gold,
+  });
+  // Glowing Cyan Minecraft / Honmoon Portal Energy Curtain inside the Obsidian Frame!
+  glowBuilder.addBox(0, 1.55, 5.15, -9.2, 1.72, 0.42, {
+    side: TILE_INDEX.ice_crystal,
+    front: TILE_INDEX.ice_crystal,
+    top: TILE_INDEX.ice_crystal,
+  });
+  // Glowing Gold & Cyan Portal Corner Beacons
+  glowBuilder.addBox(-1.22, 5.95, 6.5, -9.2, 0.56, 0.56, { side: TILE_INDEX.lantern_glow });
+  glowBuilder.addBox(0, 5.95, 6.75, -9.2, 0.78, 0.62, { side: TILE_INDEX.ice_crystal });
+  glowBuilder.addBox(1.22, 5.95, 6.5, -9.2, 0.56, 0.56, { side: TILE_INDEX.lantern_glow });
+
+  // Right Backdrop (x = +4.2, z = -9.1): Obsidian & Gold-Block Command Bunker & Diamond Safe Vault
+  opaqueBuilder.addBox(4.2, 1.0, 3.85, -9.15, 3.95, 1.15, {
+    side: TILE_INDEX.castle_brick,
+    front: TILE_INDEX.chest_front,
+    top: TILE_INDEX.bedrock_gold,
+  });
+  // Vault Security Keypad & Diamond Core Display on Front Face
+  glowBuilder.addBox(4.2, 1.85, 3.25, -8.52, 2.25, 0.24, {
+    side: TILE_INDEX.beehive_front,
+    front: TILE_INDEX.beehive_front,
+  });
+  // Upper Gold-Block & Redstone Laser Cornice
+  opaqueBuilder.addBox(4.2, 3.85, 4.45, -9.05, 4.3, 1.3, {
+    side: TILE_INDEX.bedrock_gold,
+    front: TILE_INDEX.mushroom_red,
+    top: TILE_INDEX.bedrock_gold,
+  });
+  // Golden '?' Lucky Blocks & Redstone TNT Crates stacked atop the Command Vault
+  glowBuilder.addBox(3.15, 4.45, 5.45, -9.1, 0.92, 0.92, {
+    side: TILE_INDEX.lucky_block,
+    front: TILE_INDEX.lucky_block,
+    top: TILE_INDEX.lucky_block,
+  });
+  opaqueBuilder.addBox(4.2, 4.45, 5.55, -9.1, 0.98, 0.98, {
+    side: TILE_INDEX.melon_side,
+    front: TILE_INDEX.melon_side,
+    top: TILE_INDEX.melon_top,
+  });
+  glowBuilder.addBox(5.25, 4.45, 5.45, -9.1, 0.92, 0.92, {
+    side: TILE_INDEX.lucky_block,
+    front: TILE_INDEX.lucky_block,
+    top: TILE_INDEX.lucky_block,
+  });
 
   for (const ped of HUB_LAYOUT.trophyPedestals) {
     const isEastPed = ped.x > 0;
     opaqueBuilder.addBox(ped.x, 1.0, 1.72, ped.z, 1.08, 1.08, {
       side: isEastPed ? TILE_INDEX.bedrock_gold : TILE_INDEX.spruce_bark,
-      top: isEastPed ? TILE_INDEX.castle_brick : TILE_INDEX.grass_top,
+      top: isEastPed ? TILE_INDEX.castle_brick : TILE_INDEX.hub_plaza,
     });
     glowBuilder.addBox(ped.x, 1.54, 1.74, ped.z, 1.14, 1.14, {
       side: isEastPed ? TILE_INDEX.ice_crystal : TILE_INDEX.lantern_glow,
@@ -656,135 +739,186 @@ export function createIsland(textures, ctx = {}) {
     });
   }
 
-  // Hub Prank Lantern Pillars
+  // Hub Minhwa & Glowstone Lantern Pillars
   addLanternPost(-7.5, -5.5, 1.15);
   addLanternPost(7.5, -5.5, 1.15);
   addLanternPost(-7.8, 5.2, 1.05);
   addLanternPost(7.8, 5.2, 1.05);
 
   // ============================================================================
-  // WEST LANDMARK (x = -8.4, z = -0.6): The 24:14 Pink Toy Capsule Pod & Blue Factory Office Door (23:36)
+  // WEST LANDMARK (x = -8.4, z = -0.6): Korean Minhwa Curved-Roof Peony Pavilion & Voxel Emerald Pine Tree (EgruEB4oZ2E)
   // ============================================================================
-  // Blue Factory Office Wing where Hoppy, Baba & Kickin knock (23:36)
-  opaqueBuilder.addBox(-8.5, 1.0, 3.3, -1.7, 2.2, 2.4, {
-    side: TILE_INDEX.leaves_frost,
-    front: TILE_INDEX.snowman_face,
-    top: TILE_INDEX.bedrock_gold,
-  });
-  // Prominent Blue Office Door facing the Hub (+X)
-  opaqueBuilder.addBox(-7.32, 1.0, 2.85, -1.7, 0.24, 1.35, {
-    side: TILE_INDEX.snowman_face,
-    front: TILE_INDEX.snowman_face,
-  });
-  // 24:14 Glowing Translucent Pink Toy Capsule Pod Cylinder next to the Blue Office Door!
-  opaqueBuilder.addBox(-8.3, 1.0, 1.45, 0.9, 2.1, 2.1, {
-    side: TILE_INDEX.bedrock_gold,
-    top: TILE_INDEX.bedrock_gold,
-  });
-  glowBuilder.addBox(-8.3, 1.45, 3.85, 0.9, 1.72, 1.72, {
-    side: TILE_INDEX.ice_crystal,
-    front: TILE_INDEX.ice_crystal,
-    top: TILE_INDEX.ice_crystal,
-  });
-  opaqueBuilder.addBox(-8.3, 3.85, 4.25, 0.9, 2.15, 2.15, {
-    side: TILE_INDEX.bedrock_gold,
-    top: TILE_INDEX.spruce_top,
-  });
-  // Giant Tea-Party Hat & Teacup Sign on the Factory Roof (27:43 "I love tea parties and crumpets!")
-  opaqueBuilder.addBox(-8.4, 3.3, 3.75, -1.7, 2.5, 2.7, {
+  // Raised Chiseled Granite & Celadon Jade Pavilion Foundation Terrace
+  opaqueBuilder.addBox(-8.4, 1.0, 1.52, -1.1, 2.75, 3.85, {
     side: TILE_INDEX.spruce_bark,
-    top: TILE_INDEX.bedrock_gold,
+    top: TILE_INDEX.hub_plaza,
   });
-  opaqueBuilder.addBox(-8.4, 3.75, 4.2, -1.7, 1.95, 1.95, {
-    side: TILE_INDEX.flower_sun_side,
-    top: TILE_INDEX.flower_sun_top,
+  // 4 Traditional Dark Oak Pavilion Pillars (leaving open courtyard pavilion breezeway)
+  const pavPillars = [
+    [-9.35, -2.55],
+    [-7.45, -2.55],
+    [-9.35, 0.35],
+    [-7.45, 0.35],
+  ];
+  for (const [px, pz] of pavPillars) {
+    opaqueBuilder.addBox(px, 1.52, 3.55, pz, 0.44, 0.44, {
+      side: TILE_INDEX.oak_bark,
+      top: TILE_INDEX.oak_top,
+    });
+  }
+  // Center Blue-and-White Minhwa Porcelain Peony Altar Table inside Pavilion
+  opaqueBuilder.addBox(-8.4, 1.52, 2.55, -1.1, 1.25, 1.45, {
+    side: TILE_INDEX.flower_red_side,
+    front: TILE_INDEX.flower_red_side,
+    top: TILE_INDEX.flower_red_top,
   });
-  glowBuilder.addBox(-8.4, 4.2, 5.25, -1.7, 1.25, 1.25, {
-    side: TILE_INDEX.ice_crystal,
+  // Tier 1 Wide Blue-Glazed Korean Giwa Ceramic Tile Eaves + Upturned Eaves Corners
+  opaqueBuilder.addBox(-8.4, 3.45, 4.02, -1.1, 3.35, 4.45, {
+    side: TILE_INDEX.leaves_frost,
+    front: TILE_INDEX.leaves_frost,
+    top: TILE_INDEX.leaves_frost,
+  });
+  opaqueBuilder.addBox(-8.4, 3.85, 4.22, -3.25, 3.55, 0.42, {
+    side: TILE_INDEX.bedrock_gold,
+    top: TILE_INDEX.leaves_frost,
+  });
+  opaqueBuilder.addBox(-8.4, 3.85, 4.22, 1.05, 3.55, 0.42, {
+    side: TILE_INDEX.bedrock_gold,
+    top: TILE_INDEX.leaves_frost,
+  });
+  // Tier 2 Upper Curved Blue Giwa Roof + Golden Dragon Ridge Beam (Yongmaru)
+  opaqueBuilder.addBox(-8.4, 4.02, 4.62, -1.1, 2.35, 3.25, {
+    side: TILE_INDEX.leaves_frost,
+    top: TILE_INDEX.leaves_frost,
+  });
+  glowBuilder.addBox(-8.4, 4.62, 5.08, -1.1, 1.25, 2.35, {
+    side: TILE_INDEX.bedrock_gold,
     top: TILE_INDEX.lantern_glow,
   });
-  glowBuilder.addBox(-8.4, 5.25, 5.75, -1.7, 0.55, 0.55, {
-    side: TILE_INDEX.lantern_glow,
-    top: TILE_INDEX.lantern_glow,
+  // Sculpted Korean Minhwa Emerald Voxel Pine Tree beside the Peony Pavilion (z = +1.35)
+  opaqueBuilder.addBox(-8.35, 1.0, 3.45, 1.35, 0.88, 0.88, {
+    side: TILE_INDEX.oak_bark,
+    top: TILE_INDEX.oak_top,
+  });
+  opaqueBuilder.addBox(-8.35, 2.75, 3.85, 1.35, 2.45, 2.45, {
+    side: TILE_INDEX.leaves_lush,
+    top: TILE_INDEX.leaves_lush,
+  });
+  opaqueBuilder.addBox(-8.1, 3.85, 4.75, 1.15, 1.75, 1.75, {
+    side: TILE_INDEX.leaves_lush,
+    top: TILE_INDEX.leaves_lush,
   });
 
   // ============================================================================
-  // EAST LANDMARK (x = +8.4, z = -0.6): Lily Lovebraids' 2-Story Pink & Lavender Dollhouse & Breezy-Bake Kitchen (32:47)
+  // EAST LANDMARK (x = +8.4, z = -0.6): JJ & Mikey's 2-Story Iron & Deepslate Minecraft Security House (WjAyI6kwylA)
   // ============================================================================
-  // 1st Story: Pink & Lavender Dollhouse Parlor + Breezy-Bake Oven Kitchen
-  opaqueBuilder.addBox(8.4, 1.0, 2.75, -0.6, 2.4, 4.6, {
-    side: TILE_INDEX.leaves_lush,
-    front: TILE_INDEX.melon_side,
+  // 1st Story: Reinforced Chiseled Iron Block & Dark Deepslate Security Fortress
+  opaqueBuilder.addBox(8.45, 1.0, 2.85, -0.6, 2.45, 4.65, {
+    side: TILE_INDEX.beehive_side,
+    front: TILE_INDEX.snowman_face,
+    top: TILE_INDEX.snow_top,
+  });
+  // Redstone Laser Security Gate Frame facing the Hub (-X, x = +7.18)
+  opaqueBuilder.addBox(7.18, 1.0, 2.75, -1.55, 0.36, 0.38, {
+    side: TILE_INDEX.snow_side,
     top: TILE_INDEX.bedrock_gold,
   });
-  // Giant Stocked Factory Fridge (33:19) beside the Dollhouse Kitchen
-  opaqueBuilder.addBox(7.25, 1.0, 2.95, 1.15, 0.95, 1.15, {
+  opaqueBuilder.addBox(7.18, 1.0, 2.75, 0.35, 0.36, 0.38, {
+    side: TILE_INDEX.snow_side,
+    top: TILE_INDEX.bedrock_gold,
+  });
+  // 3 Glowing Redstone Laser Beams across the Security Gate Doorway!
+  glowBuilder.addBox(7.18, 1.32, 1.52, -0.6, 0.18, 1.65, {
+    side: TILE_INDEX.mushroom_red,
+    front: TILE_INDEX.mushroom_red,
+  });
+  glowBuilder.addBox(7.18, 1.82, 2.02, -0.6, 0.18, 1.65, {
+    side: TILE_INDEX.mushroom_red,
+    front: TILE_INDEX.mushroom_red,
+  });
+  glowBuilder.addBox(7.18, 2.32, 2.52, -0.6, 0.18, 1.65, {
+    side: TILE_INDEX.mushroom_red,
+    front: TILE_INDEX.mushroom_red,
+  });
+  // Passcode '1-2-3-4' Security Keypad Pillar & Redstone TNT Trap Crate outside the Gate
+  opaqueBuilder.addBox(7.2, 1.0, 2.25, 1.32, 0.82, 0.82, {
     side: TILE_INDEX.beehive_side,
     front: TILE_INDEX.beehive_front,
     top: TILE_INDEX.beehive_top,
   });
-  // Tea-Party Crumpet Table in front of the Dollhouse Parlor
-  opaqueBuilder.addBox(7.15, 1.0, 1.85, -1.85, 1.05, 1.05, {
-    side: TILE_INDEX.flower_sun_side,
-    top: TILE_INDEX.flower_sun_top,
+  opaqueBuilder.addBox(7.2, 1.0, 1.92, -2.25, 0.92, 0.92, {
+    side: TILE_INDEX.melon_side,
+    front: TILE_INDEX.melon_side,
+    top: TILE_INDEX.melon_top,
   });
-  // 2nd Story: Lavender Dollhouse Balcony & Rainbow Makeup Studio
-  opaqueBuilder.addBox(8.4, 2.75, 4.15, -0.6, 2.3, 4.4, {
+  // 2nd Story: Armored Deepslate & Iron Bar Surveillance Control Room
+  opaqueBuilder.addBox(8.45, 2.85, 4.35, -0.6, 2.35, 4.35, {
+    side: TILE_INDEX. snowman_face,
+    front: TILE_INDEX.beehive_side,
+    top: TILE_INDEX.snow_top,
+  });
+  // Reinforced Deepslate & Caution-Striped Roof Battlement Parapet
+  opaqueBuilder.addBox(8.3, 4.35, 4.85, -0.6, 2.75, 4.85, {
+    side: TILE_INDEX.snow_side,
+    top: TILE_INDEX.snow_top,
+  });
+  // Twin Blocky Minecraft CCTV Security Cameras & Redstone Beacon Towers on the Roof!
+  opaqueBuilder.addBox(7.35, 4.85, 5.55, -2.05, 0.85, 0.85, {
+    side: TILE_INDEX.beehive_side,
+    front: TILE_INDEX.snowman_face,
+    top: TILE_INDEX.snow_top,
+  });
+  glowBuilder.addBox(6.95, 5.05, 5.4, -2.05, 0.35, 0.45, {
     side: TILE_INDEX.mushroom_red,
-    front: TILE_INDEX.leaves_lush,
+    front: TILE_INDEX.lantern_glow,
+  });
+  opaqueBuilder.addBox(7.35, 4.85, 5.55, 0.85, 0.85, 0.85, {
+    side: TILE_INDEX.beehive_side,
+    front: TILE_INDEX.snowman_face,
+    top: TILE_INDEX.snow_top,
+  });
+  glowBuilder.addBox(6.95, 5.05, 5.4, 0.85, 0.35, 0.45, {
+    side: TILE_INDEX.mushroom_red,
+    front: TILE_INDEX.lantern_glow,
+  });
+  // Central Roof Redstone Radar & Diamond Beacon Spire
+  opaqueBuilder.addBox(8.35, 4.85, 5.95, -0.6, 1.05, 1.05, {
+    side: TILE_INDEX.castle_brick,
     top: TILE_INDEX.bedrock_gold,
   });
-  // Pink & Lavender Striped Dollhouse Roof Cornice
-  opaqueBuilder.addBox(8.2, 4.15, 4.6, -0.6, 2.7, 4.9, {
-    side: TILE_INDEX.mushroom_red,
-    top: TILE_INDEX.hub_plaza,
-  });
-  // Twin Braided Purple Roof Towers with Gold Star Hair Clips!
-  opaqueBuilder.addBox(8.2, 4.6, 6.0, -1.75, 0.95, 0.95, {
-    side: TILE_INDEX.oak_bark,
-    top: TILE_INDEX.oak_top,
-  });
-  glowBuilder.addBox(8.2, 6.0, 6.55, -1.75, 0.55, 0.55, {
-    side: TILE_INDEX.lantern_glow,
-    top: TILE_INDEX.lantern_glow,
-  });
-  opaqueBuilder.addBox(8.2, 4.6, 6.0, 0.55, 0.95, 0.95, {
-    side: TILE_INDEX.oak_bark,
-    top: TILE_INDEX.oak_top,
-  });
-  glowBuilder.addBox(8.2, 6.0, 6.55, 0.55, 0.55, 0.55, {
-    side: TILE_INDEX.lantern_glow,
+  glowBuilder.addBox(8.35, 5.95, 6.65, -0.6, 0.65, 0.65, {
+    side: TILE_INDEX.ice_crystal,
     top: TILE_INDEX.lantern_glow,
   });
 
-  // SW West Factory Showroom Capsule Pillars & Chum Chompkins Snack Boxes (outer perimeter)
+  // SW Minhwa Pine Meadow Trees & Porcelain Peony Shrines (outer perimeter)
   addOakTree(-28, 21);
   addOakTree(-21, 28);
   addOakTree(-28, 28);
   addGiantMushroom(-26, 13);
   addGiantMushroom(-13, 27);
 
-  // NW CatNap & Stocked Fridge Wing Pillars & Capsule Obelisks
+  // NW Underground Mine Shaft Timber Derricks & Diamond Ore Obelisks
   addSpruceTree(-28, -21);
   addSpruceTree(-21, -28);
   addSpruceTree(-28, -28);
-  addCrystalObelisk(-12, -9, TILE_INDEX.beehive_front);
-  addCrystalObelisk(-9, -12, TILE_INDEX.beehive_front);
+  addCrystalObelisk(-12, -9, TILE_INDEX.amethyst);
+  addCrystalObelisk(-9, -12, TILE_INDEX.amethyst);
   if (isLand[toIdx(-26, -13)]) {
     const sy = heights[toIdx(-26, -13)];
     markPropFootprint(-26, -13, 0.5);
     opaqueBuilder.addBox(-26, sy, sy + 1.4, -13, 1.35, 1.35, {
-      side: TILE_INDEX.beehive_side,
-      front: TILE_INDEX.beehive_front,
+      side: TILE_INDEX.furnace_side,
+      front: TILE_INDEX.furnace_front,
     });
     opaqueBuilder.addBox(-26, sy + 1.4, sy + 2.3, -13, 1.05, 1.05, {
       side: TILE_INDEX.oak_bark,
       front: TILE_INDEX.snowman_face,
     });
-    glowBuilder.addBox(-26, sy + 2.3, sy + 2.8, -13, 0.75, 0.75, { side: TILE_INDEX.ice_crystal });
+    glowBuilder.addBox(-26, sy + 2.3, sy + 2.8, -13, 0.75, 0.75, { side: TILE_INDEX.lantern_glow });
   }
 
-  // SE Smiling Critters Soccer Pitch & Tea-Party Crumpet Towers
+  // SE Security Bunker Outpost Trees & Hay/TNT Supply Stacks
   addOakTree(28, 14);
   addOakTree(14, 28);
   addLanternPost(11, 8, 1.15);
@@ -796,11 +930,11 @@ export function createIsland(textures, ctx = {}) {
       side: TILE_INDEX.hay_side,
       top: TILE_INDEX.hay_top,
     });
-    opaqueBuilder.addBox(28, fy + 3.0, fy + 3.9, 28, 2.4, 2.4, { side: TILE_INDEX.mushroom_red });
+    opaqueBuilder.addBox(28, fy + 3.0, fy + 3.9, 28, 2.4, 2.4, { side: TILE_INDEX.bedrock_gold });
     glowBuilder.addBox(28, fy + 3.9, fy + 4.7, 28, 0.9, 0.9, { side: TILE_INDEX.lantern_glow });
   }
 
-  // NE Prototype's Stained-Glass Spider-Mech Workshop Turrets & Jester Obelisks
+  // NE Obsidian & Gold-Block Command Fortress Watchtowers & Portal Obelisks
   addCastleTurret(29, -29);
   addCastleTurret(29, -14);
   addCastleTurret(14, -29);
@@ -851,26 +985,26 @@ export function createIsland(textures, ctx = {}) {
   terrainGlowMesh.updateMatrix();
   group.add(terrainGlowMesh);
 
-  // Surrounding Playcare Atrium Floor Grid (1 draw call) + Golden Prank Curb Lights (1 InstancedMesh draw call)
+  // Surrounding Minecraft Overworld Azure Water Moat (1 draw call) + Cyan Honmoon Shoreline Foam (1 InstancedMesh draw call)
   textures.tiles.water.repeat.set(38, 38);
   const waterGeo = new THREE.PlaneGeometry(176, 176, 1, 1);
   waterGeo.rotateX(-Math.PI * 0.5);
   const waterMat = makeSurfaceMat({
     map: textures.tiles.water,
     color: 0xffffff,
-    emissive: 0x2b154d,
-    emissiveIntensity: 0.28,
-    roughness: 0.62,
+    emissive: 0x0b4a78,
+    emissiveIntensity: 0.24,
+    roughness: 0.58,
     metalness: 0.06,
   });
   const waterMesh = new THREE.Mesh(waterGeo, waterMat);
-  waterMesh.position.y = 0.52;
+  waterMesh.position.y = 0.36;
   waterMesh.receiveShadow = true;
   group.add(waterMesh);
 
   const foamGeo = new THREE.BoxGeometry(1.14, 0.12, 1.14);
   const foamMat = new THREE.MeshBasicMaterial({
-    color: 0xff85c0,
+    color: 0x99e9f2,
     transparent: true,
     opacity: 0.78,
     depthWrite: false,
@@ -881,17 +1015,17 @@ export function createIsland(textures, ctx = {}) {
   foamMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   group.add(foamMesh);
 
-  // 4 Interactive Glowing Prank Station Pads (1 InstancedMesh + 4 anchor groups)
+  // 4 Interactive Minhwa Porcelain Peony Flowerpot Pads (1 InstancedMesh + 4 anchor groups)
   const padGeo = createAtlasBoxGeometry(
-    { side: TILE_INDEX.bedrock_gold, top: TILE_INDEX.hub_plaza },
+    { side: TILE_INDEX.spruce_bark, top: TILE_INDEX.hub_plaza },
     1.56,
     0.24,
     1.56
   );
   const padMat = new THREE.MeshStandardMaterial({
     map: textures.atlasTexture,
-    emissive: 0xff85c0,
-    emissiveIntensity: 0.22,
+    emissive: 0x22b8cf,
+    emissiveIntensity: 0.2,
     roughness: 0.55,
     metalness: 0.1,
   });
@@ -915,7 +1049,7 @@ export function createIsland(textures, ctx = {}) {
     };
   });
 
-  // Center Polka-Dot Jack-in-the-Box Prank Contraption Chest at HUB_LAYOUT.rouletteChest (0, 1, -1.6)
+  // Center Diamond & Gold Safe Lucky Chest at HUB_LAYOUT.rouletteChest (0, 1, -1.6)
   const chestGroup = new THREE.Group();
   chestGroup.name = 'RouletteChest';
   chestGroup.position.set(
@@ -939,7 +1073,7 @@ export function createIsland(textures, ctx = {}) {
   );
   const chestMat = new THREE.MeshStandardMaterial({
     map: textures.atlasTexture,
-    emissive: 0xae3ec9,
+    emissive: 0xd97706,
     emissiveIntensity: 0.22,
     roughness: 0.52,
     metalness: 0.14,
@@ -982,7 +1116,7 @@ export function createIsland(textures, ctx = {}) {
     return {
       idx: ped.idx,
       titanId: ped.titanId,
-      x: ped.x,
+      x: pX(ped),
       y: ped.y,
       z: ped.z,
       unlocked: false,
@@ -990,6 +1124,10 @@ export function createIsland(textures, ctx = {}) {
       popAnim: 0,
     };
   });
+
+  function pX(ped) {
+    return ped.x;
+  }
 
   // Shared Floor Aura Rings InstancedMesh (14 rings -> 1 draw call; toneMapped: false, fog: false)
   // [0..3]: 4 Pads, [4]: Starter Block, [5]: Roulette Chest, [6..9]: 4 Mega Titans, [10..13]: 4 Trophies
@@ -1023,36 +1161,34 @@ export function createIsland(textures, ctx = {}) {
       dummy.updateMatrix();
       padBaseMesh.setMatrixAt(i, dummy.matrix);
 
-      if (p.tier === 0) tmpColor.setHex(p.x < 0 ? 0x74c0fc : 0xf783ac);
-      else if (p.tier === 1) tmpColor.setHex(0xffd43b);
-      else if (p.tier === 2) tmpColor.setHex(0x69db7c);
-      else tmpColor.setHex(0xe599f7);
+      if (p.tier === 0) tmpColor.setHex(0x74c0fc);
+      else if (p.tier === 1) tmpColor.setHex(0x51cf66);
+      else if (p.tier === 2) tmpColor.setHex(0xffd43b);
+      else tmpColor.setHex(0x3bc9db);
       padBaseMesh.setColorAt(i, tmpColor);
 
       const ringColor =
         p.tier === 0
-          ? p.x < 0
-            ? 0x4dabf7
-            : 0xff85c0
+          ? 0x3bc9db
           : p.tier === 1
-            ? 0xffd43b
+            ? 0x51cf66
             : p.tier === 2
-              ? 0x51cf66
-              : 0xcc5de8;
+              ? 0xffd43b
+              : 0xffe066;
       ringMesh.setColorAt(i, tmpColor.setHex(ringColor));
     }
     padBaseMesh.instanceMatrix.needsUpdate = true;
     if (padBaseMesh.instanceColor) padBaseMesh.instanceColor.needsUpdate = true;
 
-    ringMesh.setColorAt(4, tmpColor.setHex(0xff85c0)); // Starter Prank Box ring
-    ringMesh.setColorAt(5, tmpColor.setHex(0xffd43b)); // Jack-in-the-Box Chest spotlight ring
+    ringMesh.setColorAt(4, tmpColor.setHex(0xffd43b)); // Starter Golden '?' Lucky Block ring
+    ringMesh.setColorAt(5, tmpColor.setHex(0x3bc9db)); // Diamond Safe Lucky Chest spotlight ring
 
     const biomeOrder = ['meadow', 'snow', 'farm', 'castle'];
-    const titanRingCols = [0x4dabf7, 0xae3ec9, 0x51cf66, 0xff6b6b];
+    const titanRingCols = [0x51cf66, 0x3bc9db, 0xffd43b, 0xff6b6b];
     for (let i = 0; i < 4; i++) {
       ringMesh.setColorAt(6 + i, tmpColor.setHex(titanRingCols[i]));
       const tr = trophyStates[i];
-      ringMesh.setColorAt(10 + i, tmpColor.setHex(tr.unlocked ? 0xffd43b : 0x7950f2));
+      ringMesh.setColorAt(10 + i, tmpColor.setHex(tr.unlocked ? 0xffd43b : 0x3bc9db));
     }
     if (ringMesh.instanceColor) ringMesh.instanceColor.needsUpdate = true;
     void biomeOrder;
@@ -1071,14 +1207,14 @@ export function createIsland(textures, ctx = {}) {
       pad.anchor.remove(pad.anchor.children[0]);
     }
 
-    if (clampedTier > 0) {
+    if (clampedTier >= 0) {
       let mesh = null;
       if (typeof potMeshBuilder === 'function') {
-        mesh = potMeshBuilder(clampedTier);
+        mesh = potMeshBuilder(clampedTier, idx);
       } else if (potMeshBuilder && potMeshBuilder.isObject3D) {
         mesh = potMeshBuilder;
       } else if (typeof ctx?.buildFlowerpotMesh === 'function') {
-        mesh = ctx.buildFlowerpotMesh(clampedTier);
+        mesh = ctx.buildFlowerpotMesh(clampedTier, idx);
       } else {
         mesh = buildFallbackFlowerpot(clampedTier);
       }
@@ -1089,6 +1225,11 @@ export function createIsland(textures, ctx = {}) {
     }
     void FLOWERPOT_TIERS;
     refreshPadColors();
+  }
+
+  // Initialize all 4 pads with Tier 0 Tipped Porcelain Peony Flowerpots immediately
+  for (let i = 0; i < padStates.length; i++) {
+    setPadVisual(i, 0, null);
   }
 
   function setTrophyVisual(idx, titanId, unlocked, trophyMeshBuilder) {
@@ -1138,15 +1279,15 @@ export function createIsland(textures, ctx = {}) {
   function update(dt = 1 / 60, time = 0, ringVisibility = {}) {
     const clampedDt = Math.min(0.05, Math.max(0, dt));
 
-    // Playcare Atrium floor shimmer & Pink/Gold Curb Lights pulse
+    // Minecraft Overworld Azure Water shimmer & Cyan Honmoon Shoreline Foam pulse
     textures.tiles.water.offset.x = (time * 0.06) % 1;
     textures.tiles.water.offset.y = -(time * 0.11) % 1;
-    waterMesh.position.y = 0.48;
+    waterMesh.position.y = 0.36;
 
     for (let i = 0; i < shorelinePositions.length; i++) {
       const sp = shorelinePositions[i];
       const wave = 0.92 + Math.sin(time * 3.0 + sp.x * 0.45 + sp.z * 0.45) * 0.12;
-      dummy.position.set(sp.x, 0.58, sp.z);
+      dummy.position.set(sp.x, 0.46, sp.z);
       dummy.rotation.set(0, 0, 0);
       dummy.scale.set(wave, 1, wave);
       dummy.updateMatrix();
@@ -1154,7 +1295,7 @@ export function createIsland(textures, ctx = {}) {
     }
     foamMesh.instanceMatrix.needsUpdate = true;
 
-    // Jack-in-the-Box Prank Contraption Chest bob + smooth hinged lid open/close
+    // Diamond Safe Lucky Chest bob + smooth hinged lid open/close
     const targetAngle = chestOpen ? -1.16 : 0;
     chestOpenAngle += (targetAngle - chestOpenAngle) * Math.min(1, clampedDt * 11);
     chestLidPivot.rotation.x = chestOpenAngle;
@@ -1163,7 +1304,7 @@ export function createIsland(textures, ctx = {}) {
     const chestScale = 1.24 + Math.sin(time * 3.1) * 0.025;
     chestGroup.scale.set(chestScale, chestScale, chestScale);
 
-    // Animate planted prank stations & unlocked trophies
+    // Animate Porcelain Peony Flowerpots (including gentle tipped-pot wobble at Tier 0!) & unlocked trophies
     for (let i = 0; i < padStates.length; i++) {
       const p = padStates[i];
       if (p.popAnim > 0 && p.popAnim < 1) {
@@ -1173,7 +1314,7 @@ export function createIsland(textures, ctx = {}) {
             ? (p.popAnim / 0.7) * 1.18
             : 1.18 - ((p.popAnim - 0.7) / 0.3) * 0.18;
         p.anchor.scale.setScalar(Math.max(0.01, s));
-      } else if (p.tier > 0) {
+      } else if (p.tier >= 0) {
         const pulse = 1.0 + Math.sin(time * 2.6 + i) * 0.03;
         p.anchor.scale.setScalar(pulse);
       }
@@ -1205,7 +1346,7 @@ export function createIsland(textures, ctx = {}) {
       ringMesh.setMatrixAt(i, dummy.matrix);
     }
 
-    // Starter Prank Box floor ring
+    // Starter Golden '?' Lucky Block floor ring
     if (ringVisibility.starterVisible !== false) {
       const sScale = 2.35 + Math.sin(time * 4.2) * 0.22;
       dummy.position.set(
@@ -1222,7 +1363,7 @@ export function createIsland(textures, ctx = {}) {
     dummy.updateMatrix();
     ringMesh.setMatrixAt(4, dummy.matrix);
 
-    // Jack-in-the-Box Chest spotlight ring
+    // Diamond Safe Lucky Chest spotlight ring
     const cScale = (chestOpen ? 3.5 : 2.95) + Math.sin(time * 2.8) * 0.18;
     dummy.position.set(
       HUB_LAYOUT.rouletteChest.x,

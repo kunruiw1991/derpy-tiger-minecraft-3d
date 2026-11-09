@@ -1,4 +1,4 @@
-// Playtime Co. Lavender-Berry & Candy-Pink Playcare Atrium sky dome, smiling flower sun sprite, warm pastel clouds, and prank sparkles.
+// Minecraft Overworld Azure Sky dome, Square Golden Minecraft Sun, blocky white voxel cloud clusters, and Honmoon star motes.
 
 import * as THREE from '../../vendor/three.module.min.js';
 import { createRng } from '../core/rng.js';
@@ -7,16 +7,16 @@ export function createSky(textures) {
   const group = new THREE.Group();
   group.name = 'SkyGroup';
 
-  // 1. Vertex-colored Playtime Co. Lavender-Berry & Candy-Pink Playcare Atrium sky dome
+  // 1. Vertex-colored Minecraft Overworld Azure Sky dome (0x1e6dd8 zenith -> 0x4da6ff mid -> 0x8ce0ff horizon)
   const skyGeo = new THREE.SphereGeometry(86, 28, 18);
   const posAttr = skyGeo.attributes.position;
   const colors = new Float32Array(posAttr.count * 3);
 
-  const zenithCol = new THREE.Color(0x3b1e6d); // Royal violet zenith
-  const midSkyCol = new THREE.Color(0x9c4dcc); // Orchid mid-sky
-  const horizonCol = new THREE.Color(0xff94c2); // Candy-pink horizon
-  const warmGlowCol = new THREE.Color(0xffe066); // Golden Playtime Co. star glow
-  const seaHorizonCol = new THREE.Color(0x4a2574); // Deep plum lower atrium
+  const zenithCol = new THREE.Color(0x1e6dd8); // Crisp Minecraft sky-blue zenith
+  const midSkyCol = new THREE.Color(0x48a8ff); // Bright azure Overworld mid-sky
+  const horizonCol = new THREE.Color(0x8ce0ff); // Crisp cyan-azure horizon
+  const warmGlowCol = new THREE.Color(0xffe066); // Golden Minhwa & Minecraft sun glow
+  const seaHorizonCol = new THREE.Color(0x1864ab); // Deep azure ocean horizon below
   const tmpCol = new THREE.Color();
 
   for (let i = 0; i < posAttr.count; i++) {
@@ -26,15 +26,15 @@ export function createSky(textures) {
     const ny = Math.max(-1, Math.min(1, y / 86));
 
     if (ny >= 0) {
-      if (ny < 0.30) {
-        tmpCol.copy(horizonCol).lerp(midSkyCol, ny / 0.30);
+      if (ny < 0.28) {
+        tmpCol.copy(horizonCol).lerp(midSkyCol, ny / 0.28);
       } else {
-        tmpCol.copy(midSkyCol).lerp(zenithCol, Math.min(1, (ny - 0.30) / 0.70));
+        tmpCol.copy(midSkyCol).lerp(zenithCol, Math.min(1, (ny - 0.28) / 0.72));
       }
-      // Cheerful golden-pink skylight glow toward the northern-east atrium vista
-      const sunDot = Math.max(0, (x * 0.32 + y * 0.34 - z * 0.88) / 86);
+      // Golden-cyan sun halo toward the northern-east vista
+      const sunDot = Math.max(0, (x * 0.28 + y * 0.26 - z * 0.92) / 86);
       if (sunDot > 0.45) {
-        const sunMix = Math.pow((sunDot - 0.45) / 0.55, 1.8) * 0.52;
+        const sunMix = Math.pow((sunDot - 0.45) / 0.55, 1.8) * 0.48;
         tmpCol.lerp(warmGlowCol, sunMix);
       }
     } else {
@@ -60,7 +60,7 @@ export function createSky(textures) {
   skyDome.updateMatrix();
   group.add(skyDome);
 
-  // 2. Cheerful Playtime Co. Smiling Flower-Star Skylight Sprite (toneMapped: false, fog: false)
+  // 2. Square Golden Minecraft & Minhwa Sun Sprite (toneMapped: false, fog: false)
   const sunMat = new THREE.SpriteMaterial({
     map: textures.sunTex,
     color: 0xffffff,
@@ -70,32 +70,33 @@ export function createSky(textures) {
     fog: false,
   });
   const sunSprite = new THREE.Sprite(sunMat);
-  sunSprite.position.set(17, 14.0, -58);
-  sunSprite.scale.set(15.5, 15.5, 1);
+  sunSprite.name = 'MinecraftSquareSun';
+  sunSprite.position.set(14, 11.5, -52);
+  sunSprite.scale.set(14.5, 14.5, 1);
   sunSprite.renderOrder = -15;
   group.add(sunSprite);
 
-  // 3. Drifting warm pastel cotton-candy cloud puffs (0xfff0f8, single InstancedMesh draw call)
+  // 3. Drifting blocky white Minecraft voxel clouds (0xffffff, single InstancedMesh draw call)
   const rng = createRng(90210);
   const cloudPuffs = [];
-  const clusterCount = 14;
+  const clusterCount = 16;
   for (let c = 0; c < clusterCount; c++) {
-    const baseAngle = (c / clusterCount) * Math.PI * 2 + rng.range(-0.12, 0.12);
-    const radius = rng.range(46, 64);
-    const baseY = rng.range(7.2, 15.0);
-    const speed = rng.range(0.014, 0.026);
+    const baseAngle = (c / clusterCount) * Math.PI * 2 + rng.range(-0.10, 0.10);
+    const radius = rng.range(38, 60);
+    const baseY = rng.range(7.0, 13.5);
+    const speed = rng.range(0.012, 0.022);
     const bobPhase = rng.range(0, Math.PI * 2);
 
     const subCount = c % 3 === 0 ? 4 : 3;
     for (let s = 0; s < subCount; s++) {
       cloudPuffs.push({
         baseAngle,
-        angleOffset: (s - (subCount - 1) * 0.5) * rng.range(0.045, 0.07),
-        radius: radius + rng.range(-2.2, 2.2),
-        baseY: baseY + (s === 1 ? 0.85 : rng.range(-0.35, 0.35)),
-        sx: s === 1 ? rng.range(5.4, 7.2) : rng.range(3.6, 5.2),
-        sy: s === 1 ? rng.range(1.9, 2.5) : rng.range(1.3, 1.8),
-        sz: rng.range(3.2, 4.8),
+        angleOffset: (s - (subCount - 1) * 0.5) * rng.range(0.045, 0.068),
+        radius: radius + rng.range(-2.0, 2.0),
+        baseY: baseY + (s === 1 ? 0.45 : 0.0),
+        sx: s === 1 ? rng.range(6.2, 8.4) : rng.range(4.2, 6.0),
+        sy: s === 1 ? rng.range(1.3, 1.7) : rng.range(1.0, 1.35),
+        sz: rng.range(3.8, 5.6),
         speed,
         bobPhase: bobPhase + s * 0.4,
       });
@@ -104,31 +105,32 @@ export function createSky(textures) {
 
   const cloudGeo = new THREE.BoxGeometry(1, 1, 1);
   const cloudMat = new THREE.MeshStandardMaterial({
-    color: 0xfff0f8,
-    emissive: 0xf783ac,
-    emissiveIntensity: 0.34,
-    roughness: 0.9,
+    color: 0xffffff,
+    emissive: 0xd0ebff,
+    emissiveIntensity: 0.28,
+    roughness: 0.85,
     metalness: 0.0,
     fog: false,
   });
   const cloudMesh = new THREE.InstancedMesh(cloudGeo, cloudMat, cloudPuffs.length);
+  cloudMesh.name = 'MinecraftVoxelClouds';
   cloudMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   cloudMesh.castShadow = false;
   cloudMesh.receiveShadow = false;
   cloudMesh.frustumCulled = false;
   group.add(cloudMesh);
 
-  // 4. Floating Playcare & Smiling Critters confetti sparkle motes (1 Points draw call)
+  // 4. Floating Minecraft Experience Orbs & Honmoon Cyan-Gold Star Motes (1 Points draw call)
   const moteCount = 76;
   const moteBase = new Float32Array(moteCount * 4);
   const motePos = new Float32Array(moteCount * 3);
   const moteColors = new Float32Array(moteCount * 3);
   const palette = [
-    new THREE.Color(0xffe066), // Jester Star Gold
-    new THREE.Color(0xff85c0), // Miss Gracie Capsule Pink
-    new THREE.Color(0x74c0fc), // Playtime Co. GrabPack Blue
-    new THREE.Color(0x69db7c), // Hoppy Soccer Pitch Green
-    new THREE.Color(0xe599f7), // Lily Lovebraids Lavender
+    new THREE.Color(0xffe066), // Glowstone Gold
+    new THREE.Color(0x3bc9db), // Diamond & Honmoon Cyan
+    new THREE.Color(0x51cf66), // Minecraft Emerald Green
+    new THREE.Color(0x4dabf7), // Minhwa Cobalt Blue
+    new THREE.Color(0xff922b), // Torch & Redstone Amber
   ];
 
   for (let i = 0; i < moteCount; i++) {
@@ -152,8 +154,8 @@ export function createSky(textures) {
     let col = palette[0];
     if (!inHub) {
       if (mx < 0 && mz >= 0) col = palette[2];
-      else if (mx < 0 && mz < 0) col = palette[4];
-      else if (mx >= 0 && mz >= 0) col = palette[3];
+      else if (mx < 0 && mz < 0) col = palette[3];
+      else if (mx >= 0 && mz >= 0) col = palette[4];
       else col = palette[1];
     }
     moteColors[i * 3] = col.r;
@@ -169,7 +171,7 @@ export function createSky(textures) {
 
   const moteMat = new THREE.PointsMaterial({
     map: textures.sparkleTex,
-    size: 0.48,
+    size: 0.46,
     vertexColors: true,
     transparent: true,
     opacity: 0.88,
@@ -189,7 +191,7 @@ export function createSky(textures) {
       const ang = p.baseAngle + p.angleOffset + time * p.speed;
       const x = Math.cos(ang) * p.radius;
       const z = Math.sin(ang) * p.radius;
-      const y = p.baseY + Math.sin(time * 0.9 + p.bobPhase) * 0.35;
+      const y = p.baseY + Math.sin(time * 0.8 + p.bobPhase) * 0.25;
       dummy.position.set(x, y, z);
       dummy.rotation.set(0, -ang + Math.PI * 0.5, 0);
       dummy.scale.set(p.sx, p.sy, p.sz);
@@ -204,7 +206,7 @@ export function createSky(textures) {
   function update(_dt, time = 0) {
     updateCloudTransforms(time);
 
-    const sunPulse = 15.5 + Math.sin(time * 1.6) * 0.65;
+    const sunPulse = 14.5 + Math.sin(time * 1.4) * 0.45;
     sunSprite.scale.set(sunPulse, sunPulse, 1);
 
     const arr = motePosAttr.array;
