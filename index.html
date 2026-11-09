@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Derpy Tiger Minecraft Chapter 3D! &mdash; Round Face, Round Butt &amp; Voxel Rescue</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='34' r='26' fill='%232b7de9' stroke='%231b4fa8' stroke-width='4'/%3E%3Cellipse cx='32' cy='40' rx='18' ry='11' fill='%23f7f3e8'/%3E%3Ccircle cx='21' cy='28' r='7' fill='%23ffd026' stroke='%23141624' stroke-width='2'/%3E%3Ccircle cx='43' cy='28' r='7' fill='%23ffd026' stroke='%23141624' stroke-width='2'/%3E%3Ccircle cx='23' cy='28' r='2.5' fill='%23141624'/%3E%3Ccircle cx='41' cy='28' r='2.5' fill='%23141624'/%3E%3Cellipse cx='32' cy='35' rx='4.5' ry='3' fill='%23ff82a9'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <div id="app" class="app-root">
+      <canvas id="game-canvas" aria-label="Derpy Tiger Minecraft Chapter 3D World"></canvas>
+      <div id="ui-layer" class="ui-layer">
+        <div id="title-screen" class="title-screen">
+          <div id="title-banner" class="title-banner">
+            <div class="title-kicker">&#128047; DERPY TIGER &amp; SUSSIE MAGPIE &bull; MINECRAFT CHAPTER 3D &#128038;</div>
+            <h1 class="title-heading">DERPY TIGER MINECRAFT 3D!</h1>
+            <div class="title-sub">PAT POTS UPRIGHT &bull; JUMP &amp; THROW &bull; RESCUE MIKEY!</div>
+          </div>
+          <div id="title-actions" class="title-actions">
+            <button
+              id="btn-title-play"
+              type="button"
+              class="kid-btn kid-btn-play"
+              aria-label="Play Derpy Tiger Minecraft Chapter 3D"
+            >
+              <span class="btn-icon" aria-hidden="true">&#9654;</span>
+              <span class="btn-label">PLAY!</span>
+            </button>
+            <button
+              id="btn-title-voice"
+              type="button"
+              class="kid-btn kid-btn-sky title-voice-btn"
+              aria-label="Replay Voice Guide"
+            >
+              <span class="btn-icon" aria-hidden="true">&#128266;</span>
+              <span class="btn-label">VOICE</span>
+            </button>
+          </div>
+        </div>
+        <div id="hud" class="hud-root" hidden></div>
+        <div id="boss-banner" class="boss-banner" hidden></div>
+        <div id="roulette-modal" class="ui-modal" hidden></div>
+        <div id="pause-modal" class="ui-modal" hidden></div>
+        <div id="victory-modal" class="ui-modal" hidden></div>
+        <div id="voice-subtitle" class="voice-subtitle" hidden></div>
+      </div>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

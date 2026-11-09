@@ -1,0 +1,6 @@
+.agents/
+tmp_profiles/
+qa_artifacts/
+__pycache__/
+*.pyc
+.DS_Store
