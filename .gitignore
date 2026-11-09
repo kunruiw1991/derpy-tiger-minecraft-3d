@@ -1,4 +1,6 @@
+.agents
 .agents/
+tmp_profiles
 tmp_profiles/
 __pycache__/
 *.pyc
