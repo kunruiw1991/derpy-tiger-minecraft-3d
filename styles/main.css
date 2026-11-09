@@ -1707,3 +1707,7 @@ body.ui-modal-open .voice-subtitle {
     font-size: 14px;
   }
 }
+
+body:has(#pause-modal:not([hidden]), #roulette-modal:not([hidden]), #victory-modal:not([hidden])) #voice-subtitle {
+  display: none !important;
+}
